@@ -1,0 +1,488 @@
+import psycopg
+from flask import Flask
+
+app = Flask(__name__)
+
+def conectar():
+    return psycopg.connect(
+        host="localhost",
+        dbname="banco",  
+        user="postgres",
+        password="senha123"
+    )
+
+@app.route("/")
+def home():
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute("SELECT version();")
+    versao = cursor.fetchone()
+
+    cursor.close()
+    conexao.close()
+
+    return f"Conectado! {versao}"
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+    from flask import Flask
+import psycopg
+
+app = Flask(__name__)
+
+funcionando 
+
+from flask import Flask
+import psycopg
+
+app = Flask(__name__)
+
+def conectar():
+    return psycopg.connect(
+        host="localhost",
+        port=5432,
+        dbname="banco",
+        user="postgres",
+        password="senha123"
+    )
+
+@app.route("/")
+def home():
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute("SELECT id, nome, cpf FROM clientes;")
+    clientes = cursor.fetchall()
+
+    cursor.close()
+    conexao.close()
+
+    html = "<h1>Lista de Clientes</h1>"
+
+    for cliente in clientes:
+        html += f"<p>{cliente[0]} - {cliente[1]} - {cliente[2]}</p>"
+
+    return html
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
+
+    segunda versao 
+
+
+    from flask import Flask, request
+import psycopg
+
+app = Flask(__name__)
+
+def conectar():
+    return psycopg.connect(
+        host="localhost",
+        port=5432,
+        dbname="banco",
+        user="postgres",
+        password="senha123"
+    )
+
+@app.route("/")
+def menu():
+    return """
+        <h1>Sistema de Clientes</h1>
+
+        <a href="/listar">
+            <button>Listar Clientes</button>
+        </a>
+
+        <a href="/cadastro">
+            <button>Cadastrar Cliente</button>
+        </a>
+    """
+
+@app.route("/listar")
+def listar():
+
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        SELECT c.id, c.nome, c.cpf, c.email, c.telefone,
+               e.rua, e.numero, e.bairro, e.cidade, e.estado, e.cep
+        FROM clientes c
+        LEFT JOIN enderecos e ON c.id = e.cliente_id
+        ORDER BY c.id
+    """)
+
+    dados = cursor.fetchall()
+
+    cursor.close()
+    conexao.close()
+
+    html = "<h1>Lista de Clientes</h1>"
+    html += "<a href='/'><button>Voltar</button></a><hr>"
+
+    for d in dados:
+        html += f"""
+        <p>
+        <b>ID:</b> {d[0]} <br>
+        <b>Nome:</b> {d[1]} <br>
+        <b>CPF:</b> {d[2]} <br>
+        <b>Email:</b> {d[3]} <br>
+        <b>Telefone:</b> {d[4]} <br>
+        <b>Endereço:</b> {d[5]}, {d[6]} - {d[7]} - {d[8]}/{d[9]} - CEP: {d[10]}
+        </p>
+        <hr>
+        """
+
+    return html
+
+@app.route("/cadastro", methods=["GET", "POST"])
+def cadastro():
+
+    if request.method == "POST":
+
+        nome = request.form["nome"]
+        cpf = request.form["cpf"]
+        email = request.form["email"]
+        telefone = request.form["telefone"]
+
+        rua = request.form["rua"]
+        numero = request.form["numero"]
+        bairro = request.form["bairro"]
+        cidade = request.form["cidade"]
+        estado = request.form["estado"]
+        cep = request.form["cep"]
+
+        conexao = conectar()
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+            INSERT INTO clientes (nome, cpf, email, telefone)
+            VALUES (%s, %s, %s, %s)
+            RETURNING id
+        """, (nome, cpf, email, telefone))
+
+        cliente_id = cursor.fetchone()[0]
+
+        cursor.execute("""
+            INSERT INTO enderecos 
+            (cliente_id, rua, numero, bairro, cidade, estado, cep)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (cliente_id, rua, numero, bairro, cidade, estado, cep))
+
+        conexao.commit()
+        cursor.close()
+        conexao.close()
+
+        return """
+            <h2>Cliente cadastrado com sucesso!</h2>
+            <a href="/"><button>Voltar ao Menu</button></a>
+        """
+
+    return """
+        <h1>Cadastrar Cliente</h1>
+        <a href="/"><button>Voltar</button></a>
+        <hr>
+
+        <form method="POST">
+            <h3>Dados do Cliente</h3>
+            Nome: <input type="text" name="nome" required><br><br>
+            CPF: <input type="text" name="cpf" required><br><br>
+            Email: <input type="email" name="email"><br><br>
+            Telefone: <input type="text" name="telefone"><br><br>
+
+            <h3>Endereço</h3>
+            Rua: <input type="text" name="rua" required><br><br>
+            Número: <input type="text" name="numero" required><br><br>
+            Bairro: <input type="text" name="bairro" required><br><br>
+            Cidade: <input type="text" name="cidade" required><br><br>
+            Estado: <input type="text" name="estado" maxlength="2" required><br><br>
+            CEP: <input type="text" name="cep" required><br><br>
+
+            <button type="submit">Cadastrar</button>
+        </form>
+    """
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
+
+    funcionando versao 3
+
+
+from flask import Flask, request, redirect
+import psycopg
+
+app = Flask(__name__)
+
+def conectar():
+    return psycopg.connect(
+        host="localhost",
+        port=5432,
+        dbname="banco",
+        user="postgres",
+        password="senha123"
+    )
+
+# ================= MENU =================
+@app.route("/")
+def menu():
+    return """
+        <h1>Sistema</h1>
+        <a href="/clientes"><button>Clientes</button></a>
+        <a href="/funcionarios"><button>Funcionários</button></a>
+    """
+
+# ================= CLIENTES =================
+@app.route("/clientes")
+def clientes():
+    return """
+        <h1>Clientes</h1>
+        <a href="/"><button>Voltar</button></a>
+        <a href="/clientes/cadastrar"><button>Cadastrar</button></a>
+        <a href="/clientes/listar"><button>Listar</button></a>
+        <a href="/clientes/pesquisar"><button>Pesquisar</button></a>
+    """
+
+# -------- CADASTRAR CLIENTE --------
+@app.route("/clientes/cadastrar", methods=["GET", "POST"])
+def cadastrar_cliente():
+
+    if request.method == "POST":
+        nome = request.form["nome"]
+        cpf = request.form["cpf"]
+        email = request.form["email"]
+        telefone = request.form["telefone"]
+        imei = request.form["imei"]
+
+        conn = conectar()
+        cur = conn.cursor()
+
+        # inserir cliente
+        cur.execute("""
+            INSERT INTO clientes (nome, cpf, email, telefone)
+            VALUES (%s, %s, %s, %s)
+            RETURNING id
+        """, (nome, cpf, email, telefone))
+
+        cliente_id = cur.fetchone()[0]
+
+        # inserir imei
+        if imei:
+            cur.execute("""
+                INSERT INTO imeis (cliente_id, imei)
+                VALUES (%s, %s)
+            """, (cliente_id, imei))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return redirect("/clientes/listar")
+
+    return """
+        <h2>Cadastrar Cliente</h2>
+        <form method="POST">
+            Nome: <input name="nome" required><br><br>
+            CPF: <input name="cpf" required><br><br>
+            Email: <input name="email"><br><br>
+            Telefone: <input name="telefone"><br><br>
+            IMEI: <input name="imei"><br><br>
+            <button type="submit">Salvar</button>
+        </form>
+        <a href="/clientes"><button>Voltar</button></a>
+    """
+
+# -------- LISTAR CLIENTES --------
+@app.route("/clientes/listar")
+def listar_clientes():
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT c.id, c.nome, c.cpf, c.email, c.telefone, i.imei
+        FROM clientes c
+        LEFT JOIN imeis i ON c.id = i.cliente_id
+        ORDER BY c.id
+    """)
+
+    dados = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    html = "<h2>Lista de Clientes</h2>"
+    html += "<a href='/clientes'><button>Voltar</button></a><hr>"
+
+    for d in dados:
+        html += f"""
+        <p>
+        ID: {d[0]} <br>
+        Nome: {d[1]} <br>
+        CPF: {d[2]} <br>
+        Email: {d[3]} <br>
+        Telefone: {d[4]} <br>
+        IMEI: {d[5]} <br>
+        <a href='/clientes/excluir/{d[0]}'><button>Excluir</button></a>
+        </p>
+        <hr>
+        """
+
+    return html
+
+# -------- EXCLUIR CLIENTE --------
+@app.route("/clientes/excluir/<int:id>")
+def excluir_cliente(id):
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    cur.execute("DELETE FROM clientes WHERE id = %s", (id,))
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    return redirect("/clientes/listar")
+
+# -------- PESQUISAR --------
+@app.route("/clientes/pesquisar", methods=["GET", "POST"])
+def pesquisar_cliente():
+
+    if request.method == "POST":
+        termo = request.form["termo"]
+
+        conn = conectar()
+        cur = conn.cursor()
+
+        cur.execute("""
+            SELECT c.id, c.nome, c.cpf, i.imei
+            FROM clientes c
+            LEFT JOIN imeis i ON c.id = i.cliente_id
+            WHERE c.cpf = %s OR i.imei = %s
+        """, (termo, termo))
+
+        dados = cur.fetchall()
+
+        cur.close()
+        conn.close()
+
+        html = "<h2>Resultado</h2>"
+        html += "<a href='/clientes'><button>Voltar</button></a><hr>"
+
+        for d in dados:
+            html += f"""
+                ID: {d[0]} <br>
+                Nome: {d[1]} <br>
+                CPF: {d[2]} <br>
+                IMEI: {d[3]} <br><hr>
+            """
+
+        return html
+
+    return """
+        <h2>Pesquisar por CPF ou IMEI</h2>
+        <form method="POST">
+            Digite CPF ou IMEI:
+            <input name="termo">
+            <button type="submit">Pesquisar</button>
+        </form>
+        <a href="/clientes"><button>Voltar</button></a>
+    """
+
+# ================= FUNCIONÁRIOS =================
+@app.route("/funcionarios")
+def funcionarios():
+    return """
+        <h1>Funcionários</h1>
+        <a href="/"><button>Voltar</button></a>
+        <a href="/funcionarios/cadastrar"><button>Cadastrar</button></a>
+        <a href="/funcionarios/listar"><button>Listar</button></a>
+    """
+
+@app.route("/funcionarios/cadastrar", methods=["GET", "POST"])
+def cadastrar_funcionario():
+
+    if request.method == "POST":
+        nome = request.form["nome"]
+        cpf = request.form["cpf"]
+        email = request.form["email"]
+        telefone = request.form["telefone"]
+
+        conn = conectar()
+        cur = conn.cursor()
+
+        cur.execute("""
+            INSERT INTO funcionarios (nome, cpf, email, telefone)
+            VALUES (%s, %s, %s, %s)
+        """, (nome, cpf, email, telefone))
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return redirect("/funcionarios/listar")
+
+    return """
+        <h2>Cadastrar Funcionário</h2>
+        <form method="POST">
+            Nome: <input name="nome" required><br><br>
+            CPF: <input name="cpf" required><br><br>
+            Email: <input name="email"><br><br>
+            Telefone: <input name="telefone"><br><br>
+            <button type="submit">Salvar</button>
+        </form>
+        <a href="/funcionarios"><button>Voltar</button></a>
+    """
+
+@app.route("/funcionarios/listar")
+def listar_funcionarios():
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    cur.execute("SELECT id, nome, cpf, email, telefone FROM funcionarios")
+
+    dados = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    html = "<h2>Lista de Funcionários</h2>"
+    html += "<a href='/funcionarios'><button>Voltar</button></a><hr>"
+
+    for d in dados:
+        html += f"""
+        ID: {d[0]} <br>
+        Nome: {d[1]} <br>
+        CPF: {d[2]} <br>
+        Email: {d[3]} <br>
+        Telefone: {d[4]} <br>
+        <a href='/funcionarios/excluir/{d[0]}'><button>Excluir</button></a>
+        <hr>
+        """
+
+    return html
+
+@app.route("/funcionarios/excluir/<int:id>")
+def excluir_funcionario(id):
+
+    conn = conectar()
+    cur = conn.cursor()
+
+    cur.execute("DELETE FROM funcionarios WHERE id = %s", (id,))
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    return redirect("/funcionarios/listar")
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
