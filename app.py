@@ -116,7 +116,6 @@ def cadastrar_cliente():
     return layout("Cadastrar Cliente", """
         <h2>Cadastrar Cliente</h2>
         <form method="POST">
-
         <h3>Dados Cliente</h3>
         Nome:<input name="nome" required>
         CPF:<input name="cpf" required>
@@ -136,6 +135,96 @@ def cadastrar_cliente():
 
         <button type="submit">Salvar</button>
         <a href="/clientes"><button type="button">Voltar</button></a>
+        </form>
+    """)
+
+# =========================
+# EDITAR CLIENTE
+# =========================
+@app.route("/clientes/editar/<int:id>", methods=["GET","POST"])
+def editar_cliente(id):
+    with conectar() as conn:
+        with conn.cursor() as cur:
+
+            if request.method == "POST":
+                cur.execute("""
+                    UPDATE cliente
+                    SET nome=%s, cpf=%s, email=%s, telefone=%s
+                    WHERE id=%s
+                """, (
+                    request.form["nome"],
+                    request.form["cpf"],
+                    request.form["email"],
+                    request.form["telefone"],
+                    id
+                ))
+                return redirect("/clientes/listar")
+
+            cur.execute("""
+                SELECT nome, cpf, email, telefone
+                FROM cliente
+                WHERE id=%s
+            """, (id,))
+            cliente = cur.fetchone()
+
+    return layout("Editar Cliente", f"""
+        <h2>Editar Cliente</h2>
+        <form method="POST">
+            Nome:<input name="nome" value="{cliente[0]}" required>
+            CPF:<input name="cpf" value="{cliente[1]}" required>
+            Email:<input name="email" value="{cliente[2] or ''}">
+            Telefone:<input name="telefone" value="{cliente[3] or ''}">
+            <button type="submit">Salvar</button>
+            <a href="/clientes/listar"><button type="button">Voltar</button></a>
+        </form>
+    """)
+
+# =========================
+# EDITAR ENDEREÇO
+# =========================
+@app.route("/clientes/editar_endereco/<int:id>", methods=["GET","POST"])
+def editar_endereco(id):
+    with conectar() as conn:
+        with conn.cursor() as cur:
+
+            if request.method == "POST":
+                cur.execute("""
+                    UPDATE enderecos
+                    SET rua=%s, numero=%s, bairro=%s,
+                        cidade=%s, estado=%s, cep=%s
+                    WHERE cliente_id=%s
+                """, (
+                    request.form["rua"],
+                    request.form["numero"],
+                    request.form["bairro"],
+                    request.form["cidade"],
+                    request.form["estado"],
+                    request.form["cep"],
+                    id
+                ))
+                return redirect("/clientes/listar")
+
+            cur.execute("""
+                SELECT rua, numero, bairro, cidade, estado, cep
+                FROM enderecos
+                WHERE cliente_id=%s
+            """, (id,))
+            endereco = cur.fetchone()
+
+    if not endereco:
+        endereco = ("", "", "", "", "", "")
+
+    return layout("Editar Endereço", f"""
+        <h2>Editar Endereço</h2>
+        <form method="POST">
+            Rua:<input name="rua" value="{endereco[0] or ''}">
+            Número:<input name="numero" value="{endereco[1] or ''}">
+            Bairro:<input name="bairro" value="{endereco[2] or ''}">
+            Cidade:<input name="cidade" value="{endereco[3] or ''}">
+            Estado:<input name="estado" value="{endereco[4] or ''}">
+            CEP:<input name="cep" value="{endereco[5] or ''}">
+            <button type="submit">Salvar</button>
+            <a href="/clientes/listar"><button type="button">Voltar</button></a>
         </form>
     """)
 
@@ -162,7 +251,8 @@ def listar_clientes():
                 LEFT JOIN enderecos e ON c.id = e.cliente_id
                 LEFT JOIN imei i ON c.id = i.cliente_id
                 {filtro}
-                GROUP BY c.id, e.rua, e.numero, e.bairro, e.cidade, e.estado, e.cep
+                GROUP BY c.id, c.nome, c.cpf, c.email, c.telefone,
+                         e.rua, e.numero, e.bairro, e.cidade, e.estado, e.cep
                 ORDER BY c.nome
             """, parametros)
 
@@ -186,7 +276,8 @@ def listar_clientes():
             <strong>Endereço:</strong> {c[5] or ''}, {c[6] or ''} - {c[7] or ''} - {c[8] or ''}/{c[9] or ''} - CEP {c[10] or ''}<br>
             <strong>IMEIs:</strong> {c[11]}<br><br>
 
-            <a href="/clientes/editar/{c[0]}"><button>Editar</button></a>
+            <a href="/clientes/editar/{c[0]}"><button>Editar Cliente</button></a>
+            <a href="/clientes/editar_endereco/{c[0]}"><button>Editar Endereço</button></a>
             <a href="/clientes/excluir/{c[0]}"><button>Excluir</button></a>
             <a href="/clientes/adicionar_imei/{c[0]}"><button>Adicionar IMEI</button></a>
             <hr>
@@ -229,7 +320,7 @@ def excluir_cliente(id):
     return redirect("/clientes/listar")
 
 # =========================
-# FUNCIONÁRIOS MENU
+# FUNCIONÁRIOS
 # =========================
 @app.route("/funcionarios")
 def funcionarios():
@@ -241,9 +332,6 @@ def funcionarios():
         <a href="/"><button>Voltar</button></a>
     """)
 
-# =========================
-# LISTAR FUNCIONÁRIOS
-# =========================
 @app.route("/funcionarios/listar")
 def listar_funcionarios():
     with conectar() as conn:
