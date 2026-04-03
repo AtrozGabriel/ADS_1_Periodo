@@ -1,11 +1,12 @@
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, session
 import psycopg2
+from datetime import timedelta
 
 app = Flask(__name__)
+app.secret_key = "cellprotege_secret_key"
+app.permanent_session_lifetime = timedelta(minutes=40)
 
-# =========================
 # CONEXÃO
-# =========================
 def conectar():
     return psycopg2.connect(
         host="aws-0-us-west-2.pooler.supabase.com",
@@ -16,28 +17,80 @@ def conectar():
         sslmode="require"
     )
 
-# =========================
 # LAYOUT
-# =========================
 def layout(titulo, conteudo):
+    usuario_logado = session.get("usuario")
+
+    topo_direita = ""
+    if usuario_logado and titulo != "Login":
+        topo_direita = f"""
+        <div class="usuario">
+            👤 {usuario_logado}
+            <a href="/logout"><button class="logout">Sair</button></a>
+        </div>
+        """
+
     return f"""
     <html>
     <head>
         <title>{titulo}</title>
         <style>
             body {{ font-family: Arial; background: #f4f6f9; margin: 0; }}
-            .topo {{ background: #111827; color: white; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; }}
-            .container {{ width: 850px; margin: 30px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.08); }}
-            input {{ width: 100%; padding: 8px; margin-bottom: 12px; }}
-            button {{ background: #2563eb; color: white; padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; margin-right: 5px; }}
-            button:hover {{ background: #1d4ed8; }}
+            .topo {{
+                background: #111827;
+                color: white;
+                padding: 20px;
+                font-size: 24px;
+                font-weight: bold;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }}
+            .usuario {{
+                font-size: 14px;
+            }}
+            .logout {{
+                background: #dc2626;
+                margin-left: 10px;
+            }}
+            .logout:hover {{
+                background: #b91c1c;
+            }}
+            .container {{
+                width: 850px;
+                margin: 30px auto;
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 0 15px rgba(0,0,0,0.08);
+            }}
+            input {{
+                width: 100%;
+                padding: 8px;
+                margin-bottom: 12px;
+            }}
+            button {{
+                background: #2563eb;
+                color: white;
+                padding: 10px 18px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                margin-right: 5px;
+            }}
+            button:hover {{
+                background: #1d4ed8;
+            }}
             a {{ text-decoration: none; }}
             h3 {{ margin-top: 25px; }}
             hr {{ margin: 20px 0; }}
         </style>
     </head>
     <body>
-        <div class="topo">CELL PROTEGE BETA</div>
+        <div class="topo">
+            <div>CELL PROTEGE BETA</div>
+            {topo_direita}
+        </div>
         <div class="container">
             {conteudo}
         </div>
@@ -45,20 +98,66 @@ def layout(titulo, conteudo):
     </html>
     """
 
-# =========================
+# LOGIN 
+@app.route("/", methods=["GET","POST"])
+def login():
+    if request.method == "POST":
+        email = request.form.get("email")
+        senha = request.form.get("senha")
+
+        with conectar() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT nome
+                    FROM funcionarios
+                    WHERE email = %s AND senha = %s AND status = true
+                """, (email, senha))
+
+                usuario = cur.fetchone()
+
+        if usuario:
+            session.permanent = True
+            session["usuario"] = usuario[0]
+            return redirect("/home")
+        else:
+            return layout("Login", """
+                <h2>Login</h2>
+                <p style="color:red;">Email ou senha inválidos</p>
+                <form method="POST">
+                    Email:<input name="email" required>
+                    Senha:<input type="password" name="senha" required>
+                    <button type="submit">Entrar</button>
+                </form>
+            """)
+
+    return layout("Login", """
+        <h2>Login</h2>
+        <form method="POST">
+            Email:<input name="email" required>
+            Senha:<input type="password" name="senha" required>
+            <button type="submit">Entrar</button>
+        </form>
+    """)
+
 # HOME
-# =========================
-@app.route("/")
+@app.route("/home")
 def home():
-    return layout("Home", """
+    if "usuario" not in session:
+        return redirect("/")
+
+    return layout("Home", f"""
         <h2>Menu Principal</h2>
+        <p>Bem-vindo, {session.get("usuario")}!</p>
         <a href="/clientes"><button>Clientes</button></a>
         <a href="/funcionarios"><button>Funcionários</button></a>
     """)
 
-# =========================
-# CLIENTES MENU
-# =========================
+# LOGOUT
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
+
 @app.route("/clientes")
 def clientes():
     return layout("Clientes", """
@@ -66,12 +165,52 @@ def clientes():
         <a href="/clientes/cadastrar"><button>Cadastrar</button></a>
         <a href="/clientes/listar"><button>Listar</button></a>
         <br><br>
-        <a href="/"><button>Voltar</button></a>
+        <a href="/home"><button>Voltar</button></a>
     """)
 
-# =========================
+#cadastro de funcioanrios
+@app.route("/funcionarios/cadastrar", methods=["GET","POST"])
+def cadastrar_funcionario():
+    if request.method == "POST":
+        try:
+            with conectar() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("""
+                        INSERT INTO public.funcionarios
+                        (nome, cpf, email, senha, cargo, telefone)
+                        VALUES (%s,%s,%s,%s,%s,%s)
+                    """, (
+                        request.form["nome"],
+                        request.form["cpf"],
+                        request.form["email"],
+                        request.form["senha"],
+                        request.form["cargo"],
+                        request.form["telefone"]
+                    ))
+            return redirect("/funcionarios/listar")
+
+        except Exception as e:
+            return layout("Erro", f"""
+                <h2>Erro ao cadastrar</h2>
+                <p>CPF ou Email já cadastrados.</p>
+                <a href="/funcionarios/cadastrar"><button>Voltar</button></a>
+            """)
+
+    return layout("Cadastrar Funcionário", """
+        <h2>Cadastrar Funcionário</h2>
+        <form method="POST">
+            Nome:<input name="nome" required>
+            CPF:<input name="cpf" maxlength="14" required>
+            Email:<input name="email" required>
+            Senha:<input type="password" name="senha" required>
+            Cargo:<input name="cargo">
+            Telefone:<input name="telefone">
+            <button type="submit">Salvar</button>
+            <a href="/funcionarios"><button type="button">Voltar</button></a>
+        </form>
+    """)
+
 # CADASTRAR CLIENTE
-# =========================
 @app.route("/clientes/cadastrar", methods=["GET","POST"])
 def cadastrar_cliente():
     if request.method == "POST":
@@ -138,9 +277,9 @@ def cadastrar_cliente():
         </form>
     """)
 
-# =========================
+
 # EDITAR CLIENTE
-# =========================
+
 @app.route("/clientes/editar/<int:id>", methods=["GET","POST"])
 def editar_cliente(id):
     with conectar() as conn:
@@ -179,9 +318,7 @@ def editar_cliente(id):
         </form>
     """)
 
-# =========================
 # EDITAR ENDEREÇO
-# =========================
 @app.route("/clientes/editar_endereco/<int:id>", methods=["GET","POST"])
 def editar_endereco(id):
     with conectar() as conn:
@@ -228,9 +365,7 @@ def editar_endereco(id):
         </form>
     """)
 
-# =========================
 # LISTAR CLIENTES
-# =========================
 @app.route("/clientes/listar", methods=["GET","POST"])
 def listar_clientes():
     filtro = ""
@@ -286,9 +421,7 @@ def listar_clientes():
     lista += '<a href="/clientes"><button>Voltar</button></a>'
     return layout("Lista Clientes", lista)
 
-# =========================
 # ADICIONAR IMEI
-# =========================
 @app.route("/clientes/adicionar_imei/<int:id>", methods=["GET","POST"])
 def adicionar_imei(id):
     if request.method == "POST":
@@ -309,9 +442,7 @@ def adicionar_imei(id):
         </form>
     """)
 
-# =========================
 # EXCLUIR CLIENTE
-# =========================
 @app.route("/clientes/excluir/<int:id>")
 def excluir_cliente(id):
     with conectar() as conn:
@@ -319,9 +450,7 @@ def excluir_cliente(id):
             cur.execute("DELETE FROM cliente WHERE id=%s",(id,))
     return redirect("/clientes/listar")
 
-# =========================
 # FUNCIONÁRIOS
-# =========================
 @app.route("/funcionarios")
 def funcionarios():
     return layout("Funcionários", """
@@ -329,7 +458,7 @@ def funcionarios():
         <a href="/funcionarios/cadastrar"><button>Cadastrar</button></a>
         <a href="/funcionarios/listar"><button>Listar</button></a>
         <br><br>
-        <a href="/"><button>Voltar</button></a>
+        <a href="/home"><button>Voltar</button></a>
     """)
 
 @app.route("/funcionarios/listar")
@@ -362,8 +491,7 @@ def listar_funcionarios():
     lista += '<a href="/funcionarios"><button>Voltar</button></a>'
     return layout("Lista Funcionários", lista)
 
-# =========================
+
 # RUN
-# =========================
 if __name__ == "__main__":
     app.run()

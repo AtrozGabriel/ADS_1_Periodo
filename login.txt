@@ -1,0 +1,44 @@
+app.route serve para chamar cada funçao na web assim da para fazer cada funçao em um lugar diferente mesmo sendo 
+diferentes
+
+
+@app.route("/", methods=["GET","POST"])
+def login():
+    if request.method == "POST":
+        email = request.form.get("email")
+        senha = request.form.get("senha")
+
+        with conectar() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT nome
+                    FROM funcionarios
+                    WHERE email = %s AND senha = %s AND status = true
+                """, (email, senha))
+
+                usuario = cur.fetchone()
+
+        if usuario:
+            session.permanent = True
+            session["usuario"] = usuario[0]
+            return redirect("/home")
+        else:
+            return layout("Login", """
+                <h2>Login</h2>
+                <p style="color:red;">Email ou senha inválidos</p>
+                <form method="POST">
+                    Email:<input name="email" required>
+                    Senha:<input type="password" name="senha" required>
+                    <button type="submit">Entrar</button>
+                </form>
+            """)
+
+    return layout("Login", """
+        <h2>Login</h2>
+        <form method="POST">
+            Email:<input name="email" required>
+            Senha:<input type="password" name="senha" required>
+            <button type="submit">Entrar</button>
+        </form>
+    """)
+  
