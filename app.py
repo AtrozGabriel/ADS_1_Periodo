@@ -35,62 +35,92 @@ def layout(titulo, conteudo):
     <head>
         <title>{titulo}</title>
         <style>
-            body {{ font-family: Arial; background: #f4f6f9; margin: 0; }}
-            .topo {{
-                background: #111827;
+            body {{
+                font-family: Arial, sans-serif;
+                margin: 0;
+                background: #6b3fa0;
                 color: white;
-                padding: 20px;
-                font-size: 24px;
+            }}
+
+            .topo {{
+                background: #5a2d91;
+                padding: 20px 40px;
+                font-size: 28px;
                 font-weight: bold;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
             }}
+
+            .logo {{
+                color: #00FF00;
+            }}
+
             .usuario {{
                 font-size: 14px;
             }}
-            .logout {{
-                background: #dc2626;
-                margin-left: 10px;
-            }}
-            .logout:hover {{
-                background: #b91c1c;
-            }}
+
             .container {{
-                width: 850px;
-                margin: 30px auto;
-                background: white;
+                width: 900px;
+                margin: 40px auto;
+                background: rgba(255,255,255,0.05);
                 padding: 30px;
-                border-radius: 10px;
-                box-shadow: 0 0 15px rgba(0,0,0,0.08);
+                border-radius: 12px;
+                backdrop-filter: blur(5px);
             }}
+
             input {{
                 width: 100%;
-                padding: 8px;
-                margin-bottom: 12px;
-            }}
-            button {{
-                background: #2563eb;
-                color: white;
-                padding: 10px 18px;
-                border: none;
+                padding: 10px;
+                margin-bottom: 15px;
                 border-radius: 6px;
+                border: none;
+            }}
+
+            button {{
+                background: #facc15;
+                color: black;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 8px;
                 cursor: pointer;
-                margin-right: 5px;
+                font-weight: bold;
+                transition: 0.2s;
             }}
+
             button:hover {{
-                background: #1d4ed8;
+                background: #eab308;
+                transform: scale(1.05);
             }}
-            a {{ text-decoration: none; }}
-            h3 {{ margin-top: 25px; }}
-            hr {{ margin: 20px 0; }}
+
+            .logout {{
+                background: #ef4444;
+                color: white;
+            }}
+
+            .logout:hover {{
+                background: #dc2626;
+            }}
+
+            a {{
+                text-decoration: none;
+            }}
+
+            h2, h3 {{
+                color: white;
+            }}
+
+            hr {{
+                border: 1px solid rgba(255,255,255,0.2);
+            }}
         </style>
     </head>
     <body>
         <div class="topo">
-            <div>CELL PROTEGE BETA</div>
+            <div class="logo">CELL PROTEGE BETA</div>
             {topo_direita}
         </div>
+
         <div class="container">
             {conteudo}
         </div>
@@ -461,36 +491,165 @@ def funcionarios():
         <a href="/home"><button>Voltar</button></a>
     """)
 
+#Listar funcionario
+
 @app.route("/funcionarios/listar")
 def listar_funcionarios():
     with conectar() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT id_funcionario, nome, cpf, cargo, telefone, status
+                SELECT id_funcionario, nome, cpf, cargo, telefone
                 FROM funcionarios
                 ORDER BY nome
             """)
             dados = cur.fetchall()
 
-    lista = "<h2>Lista Funcionários</h2>"
+    lista = """
+        <h2>Lista de Funcionários</h2>
+        <style>
+            .card-funcionario {
+                background: rgba(255,255,255,0.08);
+                padding: 20px;
+                margin-bottom: 20px;
+                border-radius: 12px;
+                box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+                transition: 0.2s;
+            }
+
+            .card-funcionario:hover {
+                transform: scale(1.02);
+            }
+
+            .nome-topo {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+            .btn-editar {
+                background: #3b82f6;
+                color: white;
+                padding: 5px 12px;
+                font-size: 12px;
+                border-radius: 6px;
+                border: none;
+                cursor: pointer;
+            }
+
+            .btn-editar:hover {
+                background: #2563eb;
+            }
+        </style>
+    """
 
     if not dados:
         lista += "<p>Nenhum funcionário cadastrado.</p>"
 
     for d in dados:
         lista += f"""
-            <strong>ID:</strong> {d[0]} |
-            <strong>Nome:</strong> {d[1]} |
-            <strong>CPF:</strong> {d[2]} |
-            <strong>Cargo:</strong> {d[3] if d[3] else '-'} |
-            <strong>Telefone:</strong> {d[4] if d[4] else '-'} |
-            <strong>Status:</strong> {"Ativo" if d[5] else "Inativo"}
-            <br><br>
+            <div class="card-funcionario">
+                <div class="nome-topo">
+                    <span>{d[1]}</span>
+                    <a href="/funcionarios/editar/{d[0]}">
+                        <button class="btn-editar">Editar</button>
+                    </a>
+                </div>
+                <br>
+                <strong>CPF:</strong> {d[2]}<br>
+                <strong>Cargo:</strong> {d[3] if d[3] else '-'}<br>
+                <strong>Telefone:</strong> {d[4] if d[4] else '-'}
+            </div>
         """
 
     lista += '<a href="/funcionarios"><button>Voltar</button></a>'
     return layout("Lista Funcionários", lista)
 
+#Editar funcionario
+
+@app.route("/funcionarios/editar/<int:id>", methods=["GET","POST"])
+def editar_funcionario(id):
+    with conectar() as conn:
+        with conn.cursor() as cur:
+
+            if request.method == "POST":
+                cur.execute("""
+                    UPDATE funcionarios
+                    SET nome=%s, cpf=%s, email=%s,
+                        cargo=%s, telefone=%s
+                    WHERE id_funcionario=%s
+                """, (
+                    request.form["nome"],
+                    request.form["cpf"],
+                    request.form["email"],
+                    request.form["cargo"],
+                    request.form["telefone"],
+                    id
+                ))
+                return redirect("/funcionarios/listar")
+
+            cur.execute("""
+                SELECT nome, cpf, email, cargo, telefone
+                FROM funcionarios
+                WHERE id_funcionario=%s
+            """, (id,))
+            funcionario = cur.fetchone()
+
+    return layout("Editar Funcionário", f"""
+        <h2>Editar Funcionário</h2>
+        <form method="POST">
+            Nome:<input name="nome" value="{funcionario[0]}" required>
+            CPF:<input name="cpf" value="{funcionario[1]}" required>
+            Email:<input name="email" value="{funcionario[2]}">
+            Cargo:<input name="cargo" value="{funcionario[3] or ''}">
+            Telefone:<input name="telefone" value="{funcionario[4] or ''}">
+
+            <button type="submit">Salvar Alterações</button>
+            <a href="/funcionarios/listar">
+                <button type="button">Voltar</button>
+            </a>
+        </form>
+
+        <br><hr><br>
+
+        <h3>Segurança</h3>
+        <a href="/funcionarios/alterar_senha/{id}">
+            <button style="background:#10b981; color:white;">
+                Alterar Senha
+            </button>
+        </a>
+    """)
+
+#Senha
+
+@app.route("/funcionarios/alterar_senha/<int:id>", methods=["GET","POST"])
+def alterar_senha(id):
+    with conectar() as conn:
+        with conn.cursor() as cur:
+
+            if request.method == "POST":
+                nova_senha = request.form["senha"]
+
+                cur.execute("""
+                    UPDATE funcionarios
+                    SET senha=%s
+                    WHERE id_funcionario=%s
+                """, (nova_senha, id))
+
+                return redirect(f"/funcionarios/editar/{id}")
+
+    return layout("Alterar Senha", f"""
+        <h2>Alterar Senha</h2>
+        <form method="POST">
+            Nova Senha:
+            <input type="password" name="senha" required>
+            <button type="submit">Salvar</button>
+            <a href="/funcionarios/editar/{id}">
+                <button type="button">Cancelar</button>
+            </a>
+        </form>
+    """)
 
 # RUN
 if __name__ == "__main__":
