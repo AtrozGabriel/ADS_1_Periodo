@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.secret_key = "cellprotege_secret_key"
 app.permanent_session_lifetime = timedelta(minutes=40)
 
-# CONEXÃO
+# CON
 def conectar():
     return psycopg2.connect(
         host="aws-0-us-west-2.pooler.supabase.com",
@@ -240,7 +240,7 @@ def cadastrar_funcionario():
         </form>
     """)
 
-# CADASTRAR CLIENTE
+# Cadastri cliente
 @app.route("/clientes/cadastrar", methods=["GET","POST"])
 def cadastrar_cliente():
     if request.method == "POST":
@@ -308,7 +308,7 @@ def cadastrar_cliente():
     """)
 
 
-# EDITAR CLIENTE
+# editar cliente
 
 @app.route("/clientes/editar/<int:id>", methods=["GET","POST"])
 def editar_cliente(id):
@@ -348,7 +348,7 @@ def editar_cliente(id):
         </form>
     """)
 
-# EDITAR ENDEREÇO
+# editar end
 @app.route("/clientes/editar_endereco/<int:id>", methods=["GET","POST"])
 def editar_endereco(id):
     with conectar() as conn:
@@ -395,7 +395,7 @@ def editar_endereco(id):
         </form>
     """)
 
-# LISTAR CLIENTES
+# listar cliente
 @app.route("/clientes/listar", methods=["GET","POST"])
 def listar_clientes():
     filtro = ""
@@ -472,7 +472,7 @@ def adicionar_imei(id):
         </form>
     """)
 
-# EXCLUIR CLIENTE
+# Excluir Cliente
 @app.route("/clientes/excluir/<int:id>")
 def excluir_cliente(id):
     with conectar() as conn:
@@ -480,7 +480,7 @@ def excluir_cliente(id):
             cur.execute("DELETE FROM cliente WHERE id=%s",(id,))
     return redirect("/clientes/listar")
 
-# FUNCIONÁRIOS
+# Funcionarios
 @app.route("/funcionarios")
 def funcionarios():
     return layout("Funcionários", """
@@ -650,7 +650,6 @@ def alterar_senha(id):
             </a>
         </form>
     """)
-
-# RUN
+# Flask 
 if __name__ == "__main__":
     app.run()
