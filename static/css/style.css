@@ -1,0 +1,109 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* FUNDO */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #6b3fa0, #6b3fa0);
+    color: white;
+}
+
+/* TOPO */
+.topo {
+    background: rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+    padding: 20px 40px;
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* LOGO */
+.logo {
+    color: #22c55e;
+}
+
+/* USUARIO */
+.usuario {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* CONTAINER */
+.container {
+    width: 900px;
+    margin: 40px auto;
+    background: rgba(255,255,255,0.08);
+    padding: 30px;
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* INPUT */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+}
+
+/* BOTÕES */
+button {
+    background: linear-gradient(135deg, #facc15, #eab308);
+    color: black;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+    margin: 3px;
+}
+
+/* HOVER */
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* BOTÃO SAIR */
+.logout {
+    background: #ef4444;
+    color: white;
+}
+
+.logout:hover {
+    background: #dc2626;
+}
+
+/* LINKS */
+a {
+    text-decoration: none;
+}
+
+/* TITULOS */
+h2, h3 {
+    margin-bottom: 15px;
+}
+
+/* LISTA CLIENTES */
+strong {
+    color: #facc15;
+}
+
+/* LINHA */
+hr {
+    border: 1px solid rgba(255,255,255,0.2);
+    margin: 15px 0;
+}

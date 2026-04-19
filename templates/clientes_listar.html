@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Lista de Clientes</h2>
+
+<form method="POST">
+    <input name="busca" placeholder="Buscar CPF ou IMEI">
+    <button>Buscar</button>
+</form>
+
+<br>
+
+{% for c in clientes %}
+<strong>Nome:</strong> {{ c[1] }}<br>
+<strong>CPF:</strong> {{ c[2] }}<br>
+<strong>Email:</strong> {{ c[3] }}<br>
+<strong>Telefone:</strong> {{ c[4] }}<br>
+<strong>Endereço:</strong> {{ c[5] }}, {{ c[6] }} - {{ c[7] }} - {{ c[8] }}/{{ c[9] }}<br>
+<strong>IMEIs:</strong> {{ c[11] }}<br><br>
+
+<a href="/clientes/editar/{{ c[0] }}"><button>Editar</button></a>
+<a href="/clientes/editar_endereco/{{ c[0] }}"><button>Endereço</button></a>
+<a href="/clientes/excluir/{{ c[0] }}"><button>Excluir</button></a>
+<a href="/clientes/adicionar_imei/{{ c[0] }}"><button>IMEI</button></a>
+
+<hr>
+{% endfor %}
+
+<a href="/clientes"><button>Voltar</button></a>
+
+{% endblock %}

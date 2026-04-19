@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Cadastrar Funcionário</h2>
+
+<form method="POST">
+Nome:<input name="nome">
+CPF:<input name="cpf">
+Email:<input name="email">
+Senha:<input type="password" name="senha">
+Cargo:<input name="cargo">
+Telefone:<input name="telefone">
+
+<button>Salvar</button>
+</form>
+
+{% endblock %}

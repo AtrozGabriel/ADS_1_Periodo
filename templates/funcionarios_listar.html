@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Funcionários</h2>
+
+{% for d in dados %}
+<strong>{{ d[1] }}</strong><br>
+CPF: {{ d[2] }}<br>
+Cargo: {{ d[3] }}<br>
+Telefone: {{ d[4] }}<br>
+
+<a href="/funcionarios/editar/{{ d[0] }}"><button>Editar</button></a>
+
+<hr>
+{% endfor %}
+
+<a href="/funcionarios"><button>Voltar</button></a>
+
+{% endblock %}

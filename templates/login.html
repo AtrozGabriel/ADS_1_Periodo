@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Login</h2>
+
+{% if erro %}
+<p style="color:red;">Email ou senha inválidos</p>
+{% endif %}
+
+<form method="POST">
+    Email:<input name="email" required>
+    Senha:<input type="password" name="senha" required>
+    <button type="submit">Entrar</button>
+</form>
+
+{% endblock %}

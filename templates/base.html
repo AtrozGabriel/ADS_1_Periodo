@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ titulo or "Cell protege" }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="topo">
+    <div class="logo">CELL PROTEGE BETINHA</div>
+
+    {% if session.usuario %}
+    <div class="usuario">
+        👤 {{ session.usuario }}
+        <a href="/logout"><button class="logout">Sair</button></a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

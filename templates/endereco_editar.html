@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Editar Endereço</h2>
+
+<form method="POST">
+Rua:<input name="rua" value="{{ endereco[0] }}">
+Número:<input name="numero" value="{{ endereco[1] }}">
+Bairro:<input name="bairro" value="{{ endereco[2] }}">
+Cidade:<input name="cidade" value="{{ endereco[3] }}">
+Estado:<input name="estado" value="{{ endereco[4] }}">
+CEP:<input name="cep" value="{{ endereco[5] }}">
+
+<button>Salvar</button>
+</form>
+
+{% endblock %}

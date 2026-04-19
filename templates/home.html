@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Menu Principal</h2>
+
+<p>Bem-vindo, {{ session.usuario }}!</p>
+
+<a href="/clientes"><button>Clientes</button></a>
+<a href="/funcionarios"><button>Funcionários</button></a>
+
+{% endblock %}

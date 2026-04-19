@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Editar Funcionário</h2>
+
+<form method="POST">
+Nome:<input name="nome" value="{{ f[0] }}">
+CPF:<input name="cpf" value="{{ f[1] }}">
+Email:<input name="email" value="{{ f[2] }}">
+Cargo:<input name="cargo" value="{{ f[3] }}">
+Telefone:<input name="telefone" value="{{ f[4] }}">
+
+<button>Salvar</button>
+</form>
+
+<br><br>
+
+<a href="/funcionarios/alterar_senha/{{ id }}">
+<button>Alterar Senha</button>
+</a>
+
+{% endblock %}
