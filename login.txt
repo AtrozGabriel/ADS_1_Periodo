@@ -1,44 +1,61 @@
-app.route serve para chamar cada funçao na web assim da para fazer cada funçao em um lugar diferente mesmo sendo 
-diferentes
+home
+
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Menu Principal</h2>
+
+<p>Bem-vindo, {{ session.usuario }}!</p>
+
+<a href="/clientes"><button>Clientes</button></a>
+<a href="/funcionarios"><button>Funcionários</button></a>
+
+{% endblock %}
+
+base
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ titulo or "Sistema" }}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="topo">
+    <div class="logo">CELL PROTEGE BETINHA</div>
+
+    {% if session.usuario %}
+    <div class="usuario">
+        👤 {{ session.usuario }}
+        <a href="/logout"><button class="logout">Sair</button></a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>
 
 
-@app.route("/", methods=["GET","POST"])
-def login():
-    if request.method == "POST":
-        email = request.form.get("email")
-        senha = request.form.get("senha")
+login 
 
-        with conectar() as conn:
-            with conn.cursor() as cur:
-                cur.execute("""
-                    SELECT nome
-                    FROM funcionarios
-                    WHERE email = %s AND senha = %s AND status = true
-                """, (email, senha))
+{% extends "base.html" %}
+{% block content %}
 
-                usuario = cur.fetchone()
+<h2>Login</h2>
 
-        if usuario:
-            session.permanent = True
-            session["usuario"] = usuario[0]
-            return redirect("/home")
-        else:
-            return layout("Login", """
-                <h2>Login</h2>
-                <p style="color:red;">Email ou senha inválidos</p>
-                <form method="POST">
-                    Email:<input name="email" required>
-                    Senha:<input type="password" name="senha" required>
-                    <button type="submit">Entrar</button>
-                </form>
-            """)
+{% if erro %}
+<p style="color:red;">Email ou senha inválidos</p>
+{% endif %}
 
-    return layout("Login", """
-        <h2>Login</h2>
-        <form method="POST">
-            Email:<input name="email" required>
-            Senha:<input type="password" name="senha" required>
-            <button type="submit">Entrar</button>
-        </form>
-    """)
-  
+<form method="POST">
+    Email:<input name="email" required>
+    Senha:<input type="password" name="senha" required>
+    <button type="submit">Entrar</button>
+</form>
+
+{% endblock %}

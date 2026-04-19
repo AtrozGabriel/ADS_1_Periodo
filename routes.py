@@ -3,7 +3,15 @@ from models import conectar
 
 def init_routes(app):
 
-    @app.route("/", methods=["GET","POST"])
+    # 🔹 TELA INICIAL
+    @app.route("/")
+    def index():
+        if "usuario" in session:
+            return redirect("/home")
+        return render_template("tela_inicial.html")
+
+    # 🔹 LOGIN
+    @app.route("/login", methods=["GET","POST"])
     def login():
         if request.method == "POST":
             email = request.form.get("email")
@@ -19,6 +27,7 @@ def init_routes(app):
                     usuario = cur.fetchone()
 
             if usuario:
+                session.permanent = True
                 session["usuario"] = usuario[0]
                 return redirect("/home")
 
@@ -26,17 +35,21 @@ def init_routes(app):
 
         return render_template("login.html")
 
+    # 🔹 HOME
     @app.route("/home")
     def home():
         if "usuario" not in session:
-            return redirect("/")
-        return render_template("home.html", usuario=session["usuario"])
+            return redirect("/login")
 
+        return render_template("home.html", usuario=session.get("usuario"))
+
+    # 🔹 LOGOUT
     @app.route("/logout")
     def logout():
         session.clear()
         return redirect("/")
 
+    # 🔹 CLIENTES
     @app.route("/clientes")
     def clientes():
         return render_template("clientes.html")
@@ -56,6 +69,7 @@ def init_routes(app):
                         request.form["email"],
                         request.form["telefone"]
                     ))
+
                     cliente_id = cur.fetchone()[0]
 
                     cur.execute("""
@@ -74,7 +88,10 @@ def init_routes(app):
                     cur.execute("""
                         INSERT INTO imei (cliente_id, numero)
                         VALUES (%s,%s)
-                    """, (cliente_id, request.form["imei"]))
+                    """, (
+                        cliente_id,
+                        request.form["imei"]
+                    ))
 
             return redirect("/clientes/listar")
 
@@ -104,6 +121,7 @@ def init_routes(app):
                              e.rua, e.numero, e.bairro, e.cidade, e.estado, e.cep
                     ORDER BY c.nome
                 """, parametros)
+
                 clientes = cur.fetchall()
 
         return render_template("clientes_listar.html", clientes=clientes)
@@ -129,7 +147,8 @@ def init_routes(app):
 
                 cur.execute("""
                     SELECT nome, cpf, email, telefone
-                    FROM cliente WHERE id=%s
+                    FROM cliente
+                    WHERE id=%s
                 """, (id,))
                 cliente = cur.fetchone()
 
@@ -159,7 +178,8 @@ def init_routes(app):
 
                 cur.execute("""
                     SELECT rua, numero, bairro, cidade, estado, cep
-                    FROM enderecos WHERE cliente_id=%s
+                    FROM enderecos
+                    WHERE cliente_id=%s
                 """, (id,))
                 endereco = cur.fetchone()
 
@@ -186,7 +206,7 @@ def init_routes(app):
                 cur.execute("DELETE FROM cliente WHERE id=%s",(id,))
         return redirect("/clientes/listar")
 
-    # FUNCIONÁRIOS
+    # 🔹 FUNCIONÁRIOS
     @app.route("/funcionarios")
     def funcionarios():
         return render_template("funcionarios.html")
@@ -248,7 +268,8 @@ def init_routes(app):
 
                 cur.execute("""
                     SELECT nome, cpf, email, cargo, telefone
-                    FROM funcionarios WHERE id_funcionario=%s
+                    FROM funcionarios
+                    WHERE id_funcionario=%s
                 """, (id,))
                 funcionario = cur.fetchone()
 
@@ -256,13 +277,18 @@ def init_routes(app):
 
     @app.route("/funcionarios/alterar_senha/<int:id>", methods=["GET","POST"])
     def alterar_senha(id):
-        if request.method == "POST":
-            with conectar() as conn:
-                with conn.cursor() as cur:
+        with conectar() as conn:
+            with conn.cursor() as cur:
+
+                if request.method == "POST":
+                    nova_senha = request.form["senha"]
+
                     cur.execute("""
                         UPDATE funcionarios
-                        SET senha=%s WHERE id_funcionario=%s
-                    """, (request.form["senha"], id))
-            return redirect(f"/funcionarios/editar/{id}")
+                        SET senha=%s
+                        WHERE id_funcionario=%s
+                    """, (nova_senha, id))
+
+                    return redirect(f"/funcionarios/editar/{id}")
 
         return render_template("alterar_senha.html", id=id)

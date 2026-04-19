@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% block content %}
 
 <h2>Menu Principal</h2>
@@ -7,5 +8,35 @@
 
 <a href="/clientes"><button>Clientes</button></a>
 <a href="/funcionarios"><button>Funcionários</button></a>
+
+<!-- IMAGEM -->
+<img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/b383232c99d84622bf3592de33f45242.jpeg"
+     style="width:100%; max-width:600px; border-radius:12px; display:block; margin:auto;">
+
+
+{% endblock %}
+
+{% block scripts %}
+
+<audio id="meuAudio" autoplay style="display:none;">
+    <source src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/WhatsApp%20Audio%202026-04-19%20at%2000.11.00.mpeg" type="audio/mpeg">
+</audio>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    let audio = document.getElementById("meuAudio");
+
+    let tempo = localStorage.getItem("audioTime");
+
+    if (tempo) {
+        audio.currentTime = tempo;
+    }
+
+    // continua salvando
+    setInterval(() => {
+        localStorage.setItem("audioTime", audio.currentTime);
+    }, 500);
+});
+</script>
 
 {% endblock %}

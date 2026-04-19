@@ -1,0 +1,203 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* BODY */
+body {
+    font-family: Arial, sans-serif;
+    background: #6f4aa8;
+    color: white;
+}
+
+/* NAVBAR */
+.navbar {
+    background: #8b6ccf;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 60px;
+}
+
+.left-nav {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+/* LOGO */
+.logo h1 {
+    font-size: 28px;
+}
+
+.sub {
+    background: #f2c94c;
+    color: #2d1b69;
+    padding: 5px 10px;
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+/* BADGE */
+.badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.2);
+    padding: 10px 15px;
+    border-radius: 8px;
+}
+
+/* NAV */
+nav {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+}
+
+/* HERO */
+.hero {
+    display: flex;
+    padding: 60px;
+}
+
+/* TEXTO */
+.left {
+    width: 50%;
+}
+
+.left h2 {
+    font-size: 42px;
+    margin-bottom: 20px;
+}
+
+.left p {
+    font-size: 28px;
+    line-height: 1.4;
+    margin-bottom: 40px;
+}
+
+/* DIREITA */
+.right {
+    width: 50%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ONDAS */
+.waves {
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    background: repeating-radial-gradient(
+        circle,
+        rgba(0,0,0,0.15) 0px,
+        rgba(0,0,0,0.15) 1px,
+        transparent 1px,
+        transparent 24px
+    );
+    z-index: 0;
+}
+
+/* ESCUDO */
+.shield {
+    position: absolute;
+    width: 380px;
+    height: 380px;
+    background: #4b2e83;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+/* IMAGEM */
+.right img {
+    width: 280px;
+    position: relative;
+    z-index: 2;
+}
+
+/* ORBIT */
+.orbit {
+    position: absolute;
+    width: 380px;
+    height: 380px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+}
+
+/* ICONES */
+.icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: center;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f2c94c;
+    border-radius: 50%;
+    z-index: 5;
+    transform: translate(-50%, -50%);
+}
+
+.icon p {
+    position: absolute;
+    top: 85px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* POSIÇÕES ORBIT */
+.i1 { transform: translate(-50%, -50%) rotate(-90deg) translate(200px) rotate(90deg); }
+.i2 { transform: translate(-50%, -50%) rotate(-18deg) translate(200px) rotate(18deg); }
+.i3 { transform: translate(-50%, -50%) rotate(54deg) translate(200px) rotate(-54deg); }
+.i4 { transform: translate(-50%, -50%) rotate(126deg) translate(200px) rotate(-126deg); }
+.i5 { transform: translate(-50%, -50%) rotate(198deg) translate(200px) rotate(-198deg); }
+
+/* ========================= */
+/* BOTÕES (IGUAL SISTEMA) */
+/* ========================= */
+
+button,
+.login-btn,
+.cta {
+    background: #f2c94c;
+    color: black;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+/* HOVER */
+button:hover,
+.login-btn:hover,
+.cta:hover {
+    transform: scale(1.05);
+    opacity: 0.95;
+}
+
+/* CLICK */
+button:active,
+.login-btn:active,
+.cta:active {
+    transform: scale(0.97);
+}
