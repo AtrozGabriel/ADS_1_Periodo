@@ -1,9 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>{{ titulo or "Sistema" }}</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <meta charset="UTF-8">
+    <title>{{ titulo or "Cell Protege" }}</title>
+
+    <!-- ICON -->
+    <link rel="icon" type="image/png" href="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/73e82fd9735043499bf13173260dbeaf.png">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
 
 <div class="topo">
@@ -12,7 +18,9 @@
     {% if session.usuario %}
     <div class="usuario">
         👤 {{ session.usuario }}
-        <a href="/logout"><button class="logout">Sair</button></a>
+        <a href="/logout">
+            <button class="logout">Sair</button>
+        </a>
     </div>
     {% endif %}
 </div>
@@ -21,7 +29,6 @@
     {% block content %}{% endblock %}
 </div>
 
-<!-- 🔥 scripts sempre aqui -->
 {% block scripts %}{% endblock %}
 
 </body>

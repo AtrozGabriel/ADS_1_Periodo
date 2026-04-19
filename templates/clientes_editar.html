@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Editar Cliente</h2>
+
+<form method="POST">
+Nome:<input name="nome" value="{{ cliente[0] }}">
+CPF:<input name="cpf" value="{{ cliente[1] }}">
+Email:<input name="email" value="{{ cliente[2] }}">
+Telefone:<input name="telefone" value="{{ cliente[3] }}">
+
+<button>Salvar</button>
+</form>
+
+{% endblock %}
