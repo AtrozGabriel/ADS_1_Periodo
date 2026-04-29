@@ -21,10 +21,11 @@ body {
     padding: 30px 60px;
 }
 
+/* ESQUERDA NAV */
 .left-nav {
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 10px;
 }
 
 /* LOGO */
@@ -38,6 +39,7 @@ body {
     padding: 5px 10px;
     margin-top: 5px;
     font-size: 12px;
+    display: inline-block;
 }
 
 /* BADGE */
@@ -119,8 +121,8 @@ nav a {
     z-index: 1;
 }
 
-/* IMAGEM */
-.right img {
+/* IMAGEM PRINCIPAL */
+.right > img {
     width: 280px;
     position: relative;
     z-index: 2;
@@ -142,38 +144,55 @@ nav a {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform-origin: center;
-    width: 70px;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 80px;
+    height: 80px;
     background: #f2c94c;
     border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     z-index: 5;
-    transform: translate(-50%, -50%);
 }
 
+/* IMAGENS DOS ICONES */
+.icon img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+}
+
+/* TEXTO DOS ICONES */
 .icon p {
     position: absolute;
-    top: 85px;
+    top: 90px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 14px;
     white-space: nowrap;
 }
 
-/* POSIÇÕES ORBIT */
-.i1 { transform: translate(-50%, -50%) rotate(-90deg) translate(200px) rotate(90deg); }
-.i2 { transform: translate(-50%, -50%) rotate(-18deg) translate(200px) rotate(18deg); }
-.i3 { transform: translate(-50%, -50%) rotate(54deg) translate(200px) rotate(-54deg); }
-.i4 { transform: translate(-50%, -50%) rotate(126deg) translate(200px) rotate(-126deg); }
-.i5 { transform: translate(-50%, -50%) rotate(198deg) translate(200px) rotate(-198deg); }
+/* POSIÇÕES ORBITAIS */
+.i1 {
+    transform: translate(-50%, -50%) rotate(-90deg) translate(200px) rotate(90deg);
+}
 
-/* ========================= */
-/* BOTÕES (IGUAL SISTEMA) */
-/* ========================= */
+.i2 {
+    transform: translate(-50%, -50%) rotate(-18deg) translate(200px) rotate(18deg);
+}
 
+.i3 {
+    transform: translate(-50%, -50%) rotate(54deg) translate(200px) rotate(-54deg);
+}
+
+.i4 {
+    transform: translate(-50%, -50%) rotate(126deg) translate(200px) rotate(-126deg);
+}
+
+.i5 {
+    transform: translate(-50%, -50%) rotate(198deg) translate(200px) rotate(-198deg);
+}
+
+/* BOTÕES */
 button,
 .login-btn,
 .cta {

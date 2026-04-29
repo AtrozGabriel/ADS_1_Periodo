@@ -4,7 +4,7 @@ from datetime import timedelta
 
 app = Flask(__name__)
 app.secret_key = "cellprotege_secret_key"
-app.permanent_session_lifetime = timedelta(minutes=40)
+app.permanent_session_lifetime = timedelta(minutes=30)
 
 init_routes(app)
 

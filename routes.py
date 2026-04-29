@@ -3,14 +3,12 @@ from models import conectar
 
 def init_routes(app):
 
-    # 🔹 TELA INICIAL
     @app.route("/")
     def index():
         if "usuario" in session:
             return redirect("/home")
         return render_template("tela_inicial.html")
 
-    # 🔹 LOGIN
     @app.route("/login", methods=["GET","POST"])
     def login():
         if request.method == "POST":
@@ -35,7 +33,6 @@ def init_routes(app):
 
         return render_template("login.html")
 
-    # 🔹 HOME
     @app.route("/home")
     def home():
         if "usuario" not in session:
@@ -43,13 +40,11 @@ def init_routes(app):
 
         return render_template("home.html", usuario=session.get("usuario"))
 
-    # 🔹 LOGOUT
     @app.route("/logout")
     def logout():
         session.clear()
         return redirect("/")
 
-    # 🔹 CLIENTES
     @app.route("/clientes")
     def clientes():
         return render_template("clientes.html")
@@ -206,7 +201,7 @@ def init_routes(app):
                 cur.execute("DELETE FROM cliente WHERE id=%s",(id,))
         return redirect("/clientes/listar")
 
-    # 🔹 FUNCIONÁRIOS
+
     @app.route("/funcionarios")
     def funcionarios():
         return render_template("funcionarios.html")

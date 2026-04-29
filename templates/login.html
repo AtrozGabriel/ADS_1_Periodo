@@ -1,52 +1,16 @@
 {% extends "base.html" %}
-
 {% block content %}
 
 <h2>Login</h2>
 
 {% if erro %}
-<p style="color:rgba(255, 0, 0, 0.986);">Email ou senha inválidos</p>
+<p style="color:red;">Email ou senha inválidos</p>
 {% endif %}
 
-<form id="loginForm" method="POST">
+<form method="POST">
     Email:<input name="email" required>
     Senha:<input type="password" name="senha" required>
     <button type="submit">Entrar</button>
 </form>
-
-{% endblock %}
-
-{% block scripts %}
-
-<audio id="meuAudio">
-    <source src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/WhatsApp%20Audio%202026-04-19%20at%2000.11.00.mpeg" type="audio/mpeg">
-</audio>
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const form = document.getElementById("loginForm");
-
-    if (!form) return;
-
-    form.addEventListener("submit", function() {
-        let audio = document.getElementById("meuAudio");
-
-        // reset
-        audio.currentTime = 0;
-        localStorage.removeItem("audioTime");
-
-        // toca (sem impedir envio do form)
-        audio.play();
-
-        // salva progresso
-        let interval = setInterval(() => {
-            localStorage.setItem("audioTime", audio.currentTime);
-        }, 300);
-
-        // para depois de um tempinho
-        setTimeout(() => clearInterval(interval), 2000);
-    });
-});
-</script>
 
 {% endblock %}
