@@ -308,3 +308,13 @@ nav {
     box-shadow: 0 0 15px #4bff21;
 }
 
+/* POPUP DOS ÍCONES */
+#popupInfo .popup-content {
+    width: 350px;
+    text-align: left;
+}
+
+/* efeito mais suave */
+.popup {
+    transition: 0.2s;
+}

@@ -13,7 +13,6 @@
 <header class="navbar">
 
     <div class="left-nav">
-
         <div class="logo">
             <h1>Cell Protege</h1>
             <div class="sub">
@@ -25,7 +24,6 @@
             <span>✅</span>
             <p>Qualidade?</p>
         </div>
-
     </div>
 
     <nav>
@@ -61,32 +59,31 @@
 
         <img 
             src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/d0da70672a2c45928dfadd0db44e35f0.png"
-            alt="Celular protegido"
         >
 
         <div class="orbit">
 
-            <div class="icon i1">
+            <div class="icon i1" onmouseenter="iniciarHover('roubo')" onmouseleave="cancelarHover()">
                 <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/c7b1e57de5ab441d8073258d2685f8cd.gif">
                 <p>Roubo</p>
             </div>
 
-            <div class="icon i2">
+            <div class="icon i2" onmouseenter="iniciarHover('furto')" onmouseleave="cancelarHover()">
                 <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/fa7dd6971df9459987427abad01055bf.gif">
                 <p>Furto</p>
             </div>
 
-            <div class="icon i3">
+            <div class="icon i3" onmouseenter="iniciarHover('quedas')" onmouseleave="cancelarHover()">
                 <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/fa858c3122da444fb9b1517fa9e62646.gif">
                 <p>Quedas</p>
             </div>
 
-            <div class="icon i4">
+            <div class="icon i4" onmouseenter="iniciarHover('agua')" onmouseleave="cancelarHover()">
                 <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/6b6645a1e45d41e4bc32e4634aa826aa.gif">
                 <p>Água</p>
             </div>
 
-            <div class="icon i5">
+            <div class="icon i5" onmouseenter="iniciarHover('danos')" onmouseleave="cancelarHover()">
                 <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/80402c9385d94de58831aaa9b021687c.gif">
                 <p>Danos</p>
             </div>
@@ -97,25 +94,36 @@
 
 </section>
 
-<!-- POPUP -->
+<!-- POPUP CONTATO -->
 <div id="popupContato" class="popup">
     <div class="popup-content">
         <h3>Contato de atendimento:</h3>
         <p>📞Telefone: (93) 3515-5818</p>
-        <p>📞Telefone: (93) 93 98119-0323</p>
+        <p>📞Telefone: (93) 98119-0323</p>
+
         <h3>Endereços:</h3>
         <p>📍Rua Sete de setembro 2761 centro</p>
         <p>📍Avenida Papa nicolau 6040 barcelona</p>
-        <button class="btn-whatsapp" onclick="window.open('https://wa.me/5593981190323?text=Olá%20quero%20proteger%20meu%20celular!')">
-    Falar no WhatsApp
-</button>
-        
+
+        <button class="btn-whatsapp"
+        onclick="window.open('https://wa.me/5593981190323?text=Olá%20quero%20proteger%20meu%20celular!')">
+        Falar no WhatsApp
+        </button>
 
         <button onclick="fecharContato()">Fechar</button>
     </div>
 </div>
 
-<!-- JS -->
+<!-- POPUP DOS ÍCONES -->
+<div id="popupInfo" class="popup">
+    <div class="popup-content">
+        <h3 id="popupTitulo"></h3>
+        <p id="popupTexto"></p>
+
+    </div>
+</div>
+
+<!-- JS (fica no final do body) -->
 <script>
 function abrirContato() {
     document.getElementById("popupContato").style.display = "flex";
@@ -123,6 +131,51 @@ function abrirContato() {
 
 function fecharContato() {
     document.getElementById("popupContato").style.display = "none";
+}
+
+let tempoHover;
+
+function iniciarHover(tipo) {
+    tempoHover = setTimeout(() => {
+        abrirPopup(tipo);
+    }, 750);
+}
+
+window.onclick = function(event) {
+    const popup = document.getElementById("popupInfo");
+    if (event.target === popup) {
+        popup.style.display = "none";
+    }
+}
+function abrirPopup(tipo) {
+    const titulo = document.getElementById("popupTitulo");
+    const texto = document.getElementById("popupTexto");
+
+    if (tipo === "roubo") {
+        texto.innerText = "Roubo: em casos de uso de violência ou ameaça.";
+    }
+
+    if (tipo === "furto") {
+        texto.innerText = "Furto simples e qualificado: cobre seu aparelho quando levado mesmo sem vestígios (furto simples), ou com vestígios (furto qualificado). Basta apresentar o boletim de ocorrência.";
+    }
+
+    if (tipo === "quedas") {
+        texto.innerText = "Quedas e impactos que danifiquem o aparelho. Telas trincadas ou problemas de funcionamento. Se não for possível consertar, te enviamos outro aparelho. Simples assim!";
+    }
+
+    if (tipo === "agua") {
+        texto.innerText = "O seguro celular CellProtege protege seu aparelho contra danos causados por:\nVapor: Em ambientes como banheiros ou cozinhas.\nImersão na água: Acidentes em piscina, mar, torneira, etc.\nAcidentes com líquidos: Derramamento de café, refrigerante, sucos, etc.";
+    }
+
+    if (tipo === "danos") {
+        texto.innerText = "Feijao com farinha";
+    }
+
+    document.getElementById("popupInfo").style.display = "flex";
+}
+
+function fecharPopup() {
+    document.getElementById("popupInfo").style.display = "none";
 }
 </script>
 
