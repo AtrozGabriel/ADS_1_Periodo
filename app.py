@@ -9,4 +9,4 @@ app.permanent_session_lifetime = timedelta(minutes=30)
 init_routes(app)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True) 

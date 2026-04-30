@@ -287,3 +287,7 @@ def init_routes(app):
                     return redirect(f"/funcionarios/editar/{id}")
 
         return render_template("alterar_senha.html", id=id)
+    
+    @app.route('/servicos')
+    def servicos():
+        return render_template('servicos.html')

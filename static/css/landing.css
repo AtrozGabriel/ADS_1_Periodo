@@ -8,8 +8,8 @@
 /* BODY */
 body {
     font-family: Arial, sans-serif;
-    background: #6f4aa8;
-    color: white;
+    background: #772289; 
+    color: #ff0000; 
 }
 
 /* NAVBAR */
@@ -31,10 +31,12 @@ body {
 /* LOGO */
 .logo h1 {
     font-size: 28px;
+    color: #4bff21; 
 }
 
+/* SUBTEXTO DA LOGO */
 .sub {
-    background: #f2c94c;
+    background: #defe47;
     color: #2d1b69;
     padding: 5px 10px;
     margin-top: 5px;
@@ -47,9 +49,10 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 0, 0, 0.2);
     padding: 10px 15px;
     border-radius: 8px;
+    color: white;
 }
 
 /* NAV */
@@ -70,20 +73,24 @@ nav a {
     padding: 60px;
 }
 
-/* TEXTO */
+/* TEXTO ESQUERDA */
 .left {
     width: 50%;
 }
 
+/* TITULO PRINCIPAL */
 .left h2 {
     font-size: 42px;
     margin-bottom: 20px;
+    color: #defe47; /* ALTERE AQUI título principal */
 }
 
+/* PARÁGRAFO PRINCIPAL */
 .left p {
     font-size: 28px;
     line-height: 1.4;
     margin-bottom: 40px;
+    color: white; /* ALTERE AQUI texto principal */
 }
 
 /* DIREITA */
@@ -98,17 +105,16 @@ nav a {
 /* ONDAS */
 .waves {
     position: absolute;
-    width: 700px;
-    height: 700px;
-    border-radius: 50%;
+    width: 750px;
+    height: 750px;
+    border-radius: 150%;
     background: repeating-radial-gradient(
-        circle,
-        rgba(0,0,0,0.15) 0px,
-        rgba(0,0,0,0.15) 1px,
-        transparent 1px,
-        transparent 24px
+        circle at center,
+        #0a0015,
+        rgba(140, 0, 255, 0.2) 4px,
+        rgba(0, 255, 100, 0.2) 6px,
+        transparent 30px
     );
-    z-index: 0;
 }
 
 /* ESCUDO */
@@ -146,7 +152,7 @@ nav a {
     left: 50%;
     width: 80px;
     height: 80px;
-    background: #f2c94c;
+    background: #f8e602; 
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -169,6 +175,8 @@ nav a {
     transform: translateX(-50%);
     font-size: 14px;
     white-space: nowrap;
+    color: #000000; 
+    font-weight: bold;
 }
 
 /* POSIÇÕES ORBITAIS */
@@ -196,7 +204,7 @@ nav a {
 button,
 .login-btn,
 .cta {
-    background: #f2c94c;
+    background: #defe47;
     color: black;
     border: none;
     padding: 12px 22px;
@@ -220,3 +228,83 @@ button:active,
 .cta:active {
     transform: scale(0.97);
 }
+/* GARANTE QUE O NAV FIQUE NA FRENTE */
+nav {
+    position: relative;
+    z-index: 10;
+}
+
+/* HERO CONTROLE */
+.hero {
+    position: relative;
+    z-index: 1;
+}
+
+/* WAVES ATRÁS */
+.waves {
+    z-index: 0;
+}
+
+/* POPUP */
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.popup-content {
+    background: #2d1b69;
+    padding: 50px;
+    border-radius: 16px;
+    text-align: left;
+    color: white;
+    
+    width: 500px;     
+    max-width: 90%;  
+    
+    border: 2px solid #4bff21;
+    box-shadow: 
+        0 0 10px #4bff21,
+        0 0 25px rgba(75, 255, 33, 0.4);
+      
+}
+.popup-content h3 {
+    font-size: 22px;
+    margin-top: 7px;
+}
+
+.popup-content p {
+    font-size: 18px;
+    margin-top: 7px;
+}
+
+.popup-content button {
+    align-self: center;
+    font-size: 18px;
+    margin-top: 15px;
+}
+
+.btn-whatsapp {
+    background: #4bff21;
+    color: black;
+    border: none;
+    padding: 14px 22px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-whatsapp:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #4bff21;
+}
+

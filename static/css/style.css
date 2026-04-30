@@ -102,3 +102,48 @@ hr {
     border: 1px solid rgba(255,255,255,0.2);
     margin: 15px 0;
 }
+
+
+
+
+/* GRID DOS PLANOS */
+.planos {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.plano {
+    width: 250px;
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 16px;
+    text-align: center;
+} 
+
+/* HOVER */
+.plano:hover {
+    transform: translateY(-5px);
+}
+
+/* DESTAQUE */
+.destaque {
+    border: 2px solid #f2c94c;
+}
+
+/* TITULO */
+.plano h3 {
+    margin-bottom: 10px;
+}
+
+/* TEXTO */
+.plano p {
+    margin: 5px 0;
+}
+
+.voltar-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}

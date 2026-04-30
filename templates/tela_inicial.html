@@ -29,8 +29,10 @@
     </div>
 
     <nav>
-        <a href="#">Entre em contato</a>
-        <a href="#">Serviços de seguro</a>
+        <a href="/servicos">
+            <button class="login-btn">Serviços de seguro</button>
+        </a>
+
         <a href="/login">
             <button class="login-btn">Log in</button>
         </a>
@@ -49,7 +51,7 @@
             Dependa da sorte!
         </p>
 
-        <button class="cta">SE INSCREVA-SE JÁ!</button>
+        <button class="cta" onclick="abrirContato()">Entre em contato e saiba mais</button>
     </div>
 
     <div class="right">
@@ -65,27 +67,27 @@
         <div class="orbit">
 
             <div class="icon i1">
-                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/c7b1e57de5ab441d8073258d2685f8cd.gif" alt="Roubo">
+                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/c7b1e57de5ab441d8073258d2685f8cd.gif">
                 <p>Roubo</p>
             </div>
 
             <div class="icon i2">
-                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/fa7dd6971df9459987427abad01055bf.gif" alt="Furto">
+                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/fa7dd6971df9459987427abad01055bf.gif">
                 <p>Furto</p>
             </div>
 
             <div class="icon i3">
-                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/fa858c3122da444fb9b1517fa9e62646.gif" alt="Quedas">
+                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/fa858c3122da444fb9b1517fa9e62646.gif">
                 <p>Quedas</p>
             </div>
 
             <div class="icon i4">
-                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/6b6645a1e45d41e4bc32e4634aa826aa.gif" alt="Água">
+                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/6b6645a1e45d41e4bc32e4634aa826aa.gif">
                 <p>Água</p>
             </div>
 
             <div class="icon i5">
-                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/80402c9385d94de58831aaa9b021687c.gif" alt="Danos">
+                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/80402c9385d94de58831aaa9b021687c.gif">
                 <p>Danos</p>
             </div>
 
@@ -94,6 +96,35 @@
     </div>
 
 </section>
+
+<!-- POPUP -->
+<div id="popupContato" class="popup">
+    <div class="popup-content">
+        <h3>Contato de atendimento:</h3>
+        <p>📞Telefone: (93) 3515-5818</p>
+        <p>📞Telefone: (93) 93 98119-0323</p>
+        <h3>Endereços:</h3>
+        <p>📍Rua Sete de setembro 2761 centro</p>
+        <p>📍Avenida Papa nicolau 6040 barcelona</p>
+        <button class="btn-whatsapp" onclick="window.open('https://wa.me/5593981190323?text=Olá%20quero%20proteger%20meu%20celular!')">
+    Falar no WhatsApp
+</button>
+        
+
+        <button onclick="fecharContato()">Fechar</button>
+    </div>
+</div>
+
+<!-- JS -->
+<script>
+function abrirContato() {
+    document.getElementById("popupContato").style.display = "flex";
+}
+
+function fecharContato() {
+    document.getElementById("popupContato").style.display = "none";
+}
+</script>
 
 </body>
 </html>
