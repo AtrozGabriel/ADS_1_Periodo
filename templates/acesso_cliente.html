@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Acesso Cliente:</h2>
+
+<p>Bem-vindo, {{ cliente[0] }}!</p>
+
+<br>
+
+<div class="planos">
+
+    <div class="plano destaque">
+        <h3>Seus Dados</h3>
+
+        <p><strong>Email:</strong> {{ cliente[1] }}</p>
+        <p><strong>Telefone:</strong> {{ cliente[2] }}</p>
+    </div>
+
+    <div class="plano">
+        <h3>IMEIs</h3>
+
+        {% for imei in imeis %}
+            <p>{{ imei[0] }}</p>
+        {% endfor %}
+    </div>
+
+   <div class="plano">
+
+    <h3>Serviços</h3>
+
+    <a
+        href="/acompanhar"
+        style="display:block; margin-bottom:10px;"
+    >
+        <button type="button">
+            Acompanhar
+        </button>
+    </a>
+
+    <a href="/abrir-chamado">
+        <button type="button">
+            Abrir Chamado
+        </button>
+    </a>
+
+{% endblock %}

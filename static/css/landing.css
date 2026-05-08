@@ -82,7 +82,7 @@ nav a {
 .left h2 {
     font-size: 42px;
     margin-bottom: 20px;
-    color: #defe47; /* ALTERE AQUI título principal */
+    color: #defe47; 
 }
 
 /* PARÁGRAFO PRINCIPAL */
@@ -90,7 +90,7 @@ nav a {
     font-size: 28px;
     line-height: 1.4;
     margin-bottom: 40px;
-    color: white; /* ALTERE AQUI texto principal */
+    color: white; 
 }
 
 /* DIREITA */
@@ -105,15 +105,15 @@ nav a {
 /* ONDAS */
 .waves {
     position: absolute;
-    width: 750px;
-    height: 750px;
-    border-radius: 150%;
+    width: 700px;
+    height: 700px;
+    border-radius: 80%;
     background: repeating-radial-gradient(
         circle at center,
         #0a0015,
         rgba(140, 0, 255, 0.2) 4px,
         rgba(0, 255, 100, 0.2) 6px,
-        transparent 30px
+        transparent 37px
     );
 }
 

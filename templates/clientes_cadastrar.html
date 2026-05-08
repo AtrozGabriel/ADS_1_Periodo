@@ -5,25 +5,124 @@
 
 <form method="POST">
 
-<h3>Dados Cliente</h3>
-Nome:<input name="nome" required>
-CPF:<input name="cpf" required>
-Email:<input name="email">
-Telefone:<input name="telefone">
+    <h3>Dados Cliente</h3>
 
-<h3>Endereço</h3>
-Rua:<input name="rua">
-Número:<input name="numero">
-Bairro:<input name="bairro">
-Cidade:<input name="cidade">
-Estado:<input name="estado">
-CEP:<input name="cep">
+    Nome:
+    <input
+        type="text"
+        name="nome"
+        placeholder="Nome completo"
+        required
+    >
 
-<h3>IMEI</h3>
-<input name="imei" maxlength="15" required>
+    CPF:
+    <input
+        type="text"
+        name="cpf"
+        placeholder="000.000.000-00"
+        required
+    >
 
-<button type="submit">Salvar</button>
+    Email:
+    <input
+        type="email"
+        name="email"
+        placeholder="email@exemplo.com"
+        required
+    >
+
+    Telefone:
+    <input
+        type="text"
+        name="telefone"
+        placeholder="(00) 00000-0000"
+        required
+    >
+
+    Senha:
+    <input
+        type="password"
+        name="senha"
+        placeholder="Senha do cliente"
+        required
+    >
+
+    <hr>
+
+    <h3>Endereço</h3>
+
+    Rua:
+    <input
+        type="text"
+        name="rua"
+        placeholder="Rua"
+        required
+    >
+
+    Número:
+    <input
+        type="text"
+        name="numero"
+        placeholder="Número"
+        required
+    >
+
+    Bairro:
+    <input
+        type="text"
+        name="bairro"
+        placeholder="Bairro"
+        required
+    >
+
+    Cidade:
+    <input
+        type="text"
+        name="cidade"
+        placeholder="Cidade"
+        required
+    >
+
+    Estado:
+    <input
+        type="text"
+        name="estado"
+        placeholder="Estado"
+        required
+    >
+
+    CEP:
+    <input
+        type="text"
+        name="cep"
+        placeholder="00000-000"
+        required
+    >
+
+    <hr>
+
+    <h3>IMEI</h3>
+
+    <input
+        type="text"
+        name="imei"
+        placeholder="IMEI do aparelho"
+        maxlength="15"
+        required
+    >
+
+    <button type="submit">
+        Salvar
+    </button>
 
 </form>
+
+<div class="voltar-container">
+    <a href="/clientes">
+        <button type="button" class="logout">
+            Voltar
+        </button>
+    </a>
+</div>
 
 {% endblock %}

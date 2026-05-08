@@ -1,11 +1,45 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Acesso Funcionario:</h2>
+{% if perfil == "admin" %}
+    <h2>Admin</h2>
 
-<p>Bem-vindo, {{ session.usuario }}!</p>
+    <p>Bem-vindo, {{ usuario }}!</p>
 
-<a href="/clientes"><button>Clientes</button></a>
-<a href="/funcionarios"><button>Funcionários</button></a>
+    <br>
+
+    <a href="/clientes">
+        <button type="button">Clientes</button>
+    </a>
+
+    <a href="/funcionarios">
+        <button type="button">Funcionários</button>
+    </a>
+    
+{% else %}
+
+    <h2>Atendente</h2>
+
+    <p>Bem-vindo, {{ usuario }}!</p>
+
+    <br>
+
+    <a href="/clientes/cadastrar">
+        <button type="button">Cadastrar cliente</button>
+    </a>
+
+    <a href="/clientes/listar">
+        <button type="button">Listar cliente</button>
+    </a>
+
+{% endif %}
+
+<br><br>
+
+<a href="/logout">
+    <button type="button" class="logout">
+        Sair
+    </button>
+</a>
 
 {% endblock %}
