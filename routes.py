@@ -141,16 +141,6 @@ def init_routes(app):
         session.clear()
         return redirect("/")
 
-    @app.route("/home")
-    @login_required(["admin", "atendente"])
-    def home():
-        return render_template(
-            "home.html",
-            usuario=session.get("usuario"),
-            perfil=session.get("perfil"),
-            cargo=session.get("cargo")
-        )
-
     @app.route("/admin")
     @login_required(["admin"])
     def admin():
