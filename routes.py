@@ -3,9 +3,10 @@ from functools import wraps
 from models import conectar
 import uuid
 from supabase import create_client
+import os
 
-SUPABASE_URL = "https://gyzqfnxwnnxwzqtzodmu.supabase.co"
-SUPABASE_KEY = "SUA_SECRET_KEY"
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
 BUCKET = "documentos-clientes"
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -29,7 +30,7 @@ def upload_arquivo(arquivo, cliente_id, tipo_solicitacao, tipo_arquivo):
     nome_unico = f"{tipo_arquivo}_{uuid.uuid4().hex}.{extensao}"
     caminho = f"cliente_{cliente_id}/{tipo_solicitacao}/{nome_unico}"
 
-    supabase.storage.from_(BUCKET).upload(
+    supabase.storage.from_(BUCKET).upload( # type: ignore
         path=caminho,
         file=arquivo.read(),
         file_options={
@@ -124,6 +125,12 @@ def init_routes(app):
             return render_template("login.html", erro=True)
 
         return render_template("login.html")
+
+    @app.route("/logout")
+    def logout():
+        session.clear()
+        return redirect("/")
+
     @app.route("/home")
     @login_required(["admin", "atendente"])
     def home():
@@ -133,10 +140,7 @@ def init_routes(app):
             perfil=session.get("perfil"),
             cargo=session.get("cargo")
         )
-    @app.route("/logout")
-    def logout():
-        session.clear()
-        return redirect("/")
+
     @app.route("/admin")
     @login_required(["admin"])
     def admin():
@@ -689,3 +693,51 @@ def init_routes(app):
 
         return redirect("/acompanhar")
     
+    @app.route("/chamados")
+    @login_required(["admin"])
+    def chamados():
+        with conectar() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT
+                        sd.id,
+                        c.nome,
+                        sd.tipo_solicitacao,
+                        sd.descricao,
+                        sd.status_analise,
+                        sd.criado_em
+                    FROM solicitacoes_documentos sd
+                    JOIN cliente c ON c.id = sd.cliente_id
+                    ORDER BY sd.criado_em DESC
+                """)
+                chamados = cur.fetchall()
+
+        return render_template("chamados.html", chamados=chamados)
+
+
+    @app.route("/chamados/<int:id>/aprovar", methods=["POST"])
+    @login_required(["admin"])
+    def aprovar_chamado(id):
+        with conectar() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    UPDATE solicitacoes_documentos
+                    SET status_analise = 'aprovado'
+                    WHERE id = %s
+                """, (id,))
+
+        return redirect("/chamados")
+
+
+    @app.route("/chamados/<int:id>/reprovar", methods=["POST"])
+    @login_required(["admin"])
+    def reprovar_chamado(id):
+        with conectar() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    UPDATE solicitacoes_documentos
+                    SET status_analise = 'reprovado'
+                    WHERE id = %s
+                """, (id,))
+
+        return redirect("/chamados")
