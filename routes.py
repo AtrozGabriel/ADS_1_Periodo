@@ -125,7 +125,15 @@ def init_routes(app):
             return render_template("login.html", erro=True)
 
         return render_template("login.html")
-
+    @app.route("/home")
+    @login_required(["admin", "atendente"])
+    def home():
+        return render_template(
+            "home.html",
+            usuario=session.get("usuario"),
+            perfil=session.get("perfil"),
+            cargo=session.get("cargo")
+        )
     @app.route("/logout")
     def logout():
         session.clear()
