@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Acompanhar Chamados</h2>
+
+{% if chamados %}
+
+    {% for c in chamados %}
+
+        <strong>Tipo:</strong>
+
+        {% if c[1] == "roubo_furto" %}
+            Roubo / Furto
+        {% else %}
+            Danos materiais
+        {% endif %}
+
+        <br>
+
+        <strong>Status:</strong>
+
+        {% if c[2] == "em_analise" %}
+
+            Em análise
+
+        {% elif c[2] == "aprovado" %}
+
+            Aprovado
+
+        {% else %}
+
+            Reprovado
+
+        {% endif %}
+
+        <br>
+
+        <strong>Data:</strong>
+
+        {{ c[3].strftime('%d/%m/%Y às %H:%M') }}
+
+        <br><br>
+
+        {% if c[2] == "em_analise" %}
+
+            <form
+                method="POST"
+                action="/cancelar-chamado/{{ c[0] }}"
+                style="display:inline;"
+            >
+
+                <button
+                    type="submit"
+                    class="logout"
+                >
+                    Cancelar Chamado
+                </button>
+
+            </form>
+
+        {% endif %}
+
+        <hr>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>Você ainda não possui chamados.</p>
+
+{% endif %}
+
+<div class="voltar-container">
+
+    <a href="/acesso-cliente">
+
+        <button
+            type="button"
+            class="logout"
+        >
+            Voltar
+        </button>
+
+    </a>
+
+</div>
+
+{% endblock %}

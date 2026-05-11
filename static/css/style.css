@@ -147,3 +147,18 @@ hr {
     display: flex;
     justify-content: center;
 }
+.logo {
+    color: #00ff66;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    text-decoration: none;
+
+    transition: 0.2s;
+}
+
+.logo:hover {
+    opacity: 0.8;
+}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Abrir Chamado</h2>
+
+<p>Escolha o tipo do chamado:</p>
+
+<a href="/abrir-chamado/roubo-furto">
+    <button type="button">Roubo / Furto</button>
+</a>
+
+<a href="/abrir-chamado/danos-materiais">
+    <button type="button">Danos materiais</button>
+</a>
+
+<div class="voltar-container">
+    <a href="/acesso-cliente">
+        <button type="button" class="logout">Voltar</button>
+    </a>
+</div>
+
+{% endblock %}

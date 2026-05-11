@@ -1,7 +1,14 @@
 from flask import request, redirect, session, render_template, abort
 from functools import wraps
 from models import conectar
+import uuid
+from supabase import create_client
 
+SUPABASE_URL = "https://gyzqfnxwnnxwzqtzodmu.supabase.co"
+SUPABASE_KEY = "SUA_SECRET_KEY"
+BUCKET = "documentos-clientes"
+
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def login_required(perfis=None):
     def decorator(f):
@@ -17,12 +24,28 @@ def login_required(perfis=None):
         return wrapper
     return decorator
 
+def upload_arquivo(arquivo, cliente_id, tipo_solicitacao, tipo_arquivo):
+    extensao = arquivo.filename.rsplit(".", 1)[-1].lower()
+    nome_unico = f"{tipo_arquivo}_{uuid.uuid4().hex}.{extensao}"
+    caminho = f"cliente_{cliente_id}/{tipo_solicitacao}/{nome_unico}"
+
+    supabase.storage.from_(BUCKET).upload(
+        path=caminho,
+        file=arquivo.read(),
+        file_options={
+            "content-type": arquivo.mimetype
+        }
+    )
+
+    return caminho
+
 
 def _perfil_do_cargo(cargo):
     cargo = (cargo or "").strip().lower()
 
     if cargo == "admin":
         return "admin"
+
     if cargo == "atendente":
         return "atendente"
 
@@ -33,9 +56,15 @@ def init_routes(app):
 
     @app.route("/")
     def index():
+
         if "usuario" in session:
-            if session.get("perfil") in ["admin", "atendente"]:
+
+            if session.get("perfil") in [
+                "admin",
+                "atendente"
+            ]:
                 return redirect("/home")
+
             if session.get("perfil") == "cliente":
                 return redirect("/acesso-cliente")
 
@@ -100,17 +129,6 @@ def init_routes(app):
     def logout():
         session.clear()
         return redirect("/")
-
-    @app.route("/home")
-    @login_required(["admin", "atendente"])
-    def home():
-        return render_template(
-            "home.html",
-            usuario=session.get("usuario"),
-            perfil=session.get("perfil"),
-            cargo=session.get("cargo")
-        )
-
     @app.route("/admin")
     @login_required(["admin"])
     def admin():
@@ -442,3 +460,224 @@ def init_routes(app):
     @app.route("/servicos")
     def servicos():
         return render_template("servicos.html")
+    
+    @app.route("/abrir-chamado")
+    @login_required(["cliente"])
+    def abrir_chamado():
+        return render_template("abrir_chamado.html")
+
+
+    @app.route("/abrir-chamado/roubo-furto", methods=["GET", "POST"])
+    @login_required(["cliente"])
+    def roubo_furto():
+        if request.method == "POST":
+            boletim = request.files.get("boletim")
+            nota_fiscal = request.files.get("nota_fiscal")
+            descricao = request.form.get("descricao", "")
+
+            if not boletim or not nota_fiscal:
+                return render_template(
+                    "chamado_roubo_furto.html",
+                    erro="Envie o boletim de ocorrência e a nota fiscal."
+                )
+
+            with conectar() as conn:
+                with conn.cursor() as cur:
+
+                    cur.execute("""
+                        INSERT INTO solicitacoes_documentos
+                        (cliente_id, tipo_solicitacao, descricao, status_analise)
+                        VALUES (%s, %s, %s, %s)
+                        RETURNING id
+                    """, (
+                        session["usuario_id"],
+                        "roubo_furto",
+                        descricao,
+                        "em_analise"
+                    ))
+
+                    solicitacao_id = cur.fetchone()[0]
+
+                    caminho_boletim = upload_arquivo(
+                        boletim,
+                        session["usuario_id"],
+                        "roubo_furto",
+                        "boletim_ocorrencia"
+                    )
+
+                    cur.execute("""
+                        INSERT INTO solicitacoes_arquivos
+                        (solicitacao_id, tipo_arquivo, bucket_nome, caminho_arquivo, nome_arquivo_original, mime_type, status_arquivo)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    """, (
+                        solicitacao_id,
+                        "boletim_ocorrencia",
+                        BUCKET,
+                        caminho_boletim,
+                        boletim.filename,
+                        boletim.mimetype,
+                        "pendente"
+                    ))
+
+                    caminho_nf = upload_arquivo(
+                        nota_fiscal,
+                        session["usuario_id"],
+                        "roubo_furto",
+                        "nota_fiscal"
+                    )
+
+                    cur.execute("""
+                        INSERT INTO solicitacoes_arquivos
+                        (solicitacao_id, tipo_arquivo, bucket_nome, caminho_arquivo, nome_arquivo_original, mime_type, status_arquivo)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    """, (
+                        solicitacao_id,
+                        "nota_fiscal",
+                        BUCKET,
+                        caminho_nf,
+                        nota_fiscal.filename,
+                        nota_fiscal.mimetype,
+                        "pendente"
+                    ))
+
+            return redirect("/acesso-cliente")
+
+        return render_template("chamado_roubo_furto.html")
+
+
+    @app.route("/abrir-chamado/danos-materiais", methods=["GET", "POST"])
+    @login_required(["cliente"])
+    def danos_materiais():
+        if request.method == "POST":
+            foto_celular = request.files.get("foto_celular")
+            nota_fiscal = request.files.get("nota_fiscal")
+            descricao = request.form.get("descricao", "")
+
+            if not foto_celular or not nota_fiscal:
+                return render_template(
+                    "chamado_danos_materiais.html",
+                    erro="Envie a foto do celular e a nota fiscal."
+                )
+
+            with conectar() as conn:
+                with conn.cursor() as cur:
+
+                    cur.execute("""
+                        INSERT INTO solicitacoes_documentos
+                        (cliente_id, tipo_solicitacao, descricao, status_analise)
+                        VALUES (%s, %s, %s, %s)
+                        RETURNING id
+                    """, (
+                        session["usuario_id"],
+                        "danos_materiais",
+                        descricao,
+                        "em_analise"
+                    ))
+
+                    solicitacao_id = cur.fetchone()[0]
+
+                    caminho_foto = upload_arquivo(
+                        foto_celular,
+                        session["usuario_id"],
+                        "danos_materiais",
+                        "foto_celular"
+                    )
+
+                    cur.execute("""
+                        INSERT INTO solicitacoes_arquivos
+                        (solicitacao_id, tipo_arquivo, bucket_nome, caminho_arquivo, nome_arquivo_original, mime_type, status_arquivo)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    """, (
+                        solicitacao_id,
+                        "foto_celular",
+                        BUCKET,
+                        caminho_foto,
+                        foto_celular.filename,
+                        foto_celular.mimetype,
+                        "pendente"
+                    ))
+
+                    caminho_nf = upload_arquivo(
+                        nota_fiscal,
+                        session["usuario_id"],
+                        "danos_materiais",
+                        "nota_fiscal"
+                    )
+
+                    cur.execute("""
+                        INSERT INTO solicitacoes_arquivos
+                        (solicitacao_id, tipo_arquivo, bucket_nome, caminho_arquivo, nome_arquivo_original, mime_type, status_arquivo)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    """, (
+                        solicitacao_id,
+                        "nota_fiscal",
+                        BUCKET,
+                        caminho_nf,
+                        nota_fiscal.filename,
+                        nota_fiscal.mimetype,
+                        "pendente"
+                    ))
+
+            return redirect("/acesso-cliente")
+
+        return render_template("chamado_danos_materiais.html")
+    
+    @app.route("/acompanhar")
+    @login_required(["cliente"])
+    def acompanhar():
+
+        with conectar() as conn:
+            with conn.cursor() as cur:
+
+                cur.execute("""
+                    SELECT
+                        id,
+                        tipo_solicitacao,
+                        status_analise,
+                        criado_em
+                    FROM solicitacoes_documentos
+                    WHERE cliente_id = %s
+                    ORDER BY criado_em DESC
+                """, (
+                    session["usuario_id"],
+                ))
+
+                chamados = cur.fetchall()
+
+        return render_template(
+            "acompanhar.html",
+            chamados=chamados
+        )
+    
+    @app.route("/cancelar-chamado/<int:id>", methods=["POST"])
+    @login_required(["cliente"])
+    def cancelar_chamado(id):
+
+        with conectar() as conn:
+            with conn.cursor() as cur:
+
+                cur.execute("""
+                    SELECT caminho_arquivo
+                    FROM solicitacoes_arquivos
+                    WHERE solicitacao_id = %s
+                """, (id,))
+
+                arquivos = cur.fetchall()
+
+                for arquivo in arquivos:
+
+                    supabase.storage.from_(BUCKET).remove([
+                        arquivo[0]
+                    ])
+
+                cur.execute("""
+                    DELETE FROM solicitacoes_documentos
+                    WHERE id = %s
+                    AND cliente_id = %s
+                """, (
+                    id,
+                    session["usuario_id"]
+                ))
+
+        return redirect("/acompanhar")
+    
