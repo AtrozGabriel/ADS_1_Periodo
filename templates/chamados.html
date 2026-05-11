@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Chamados</h2>
+
+{% for c in chamados %}
+
+    <strong>Cliente:</strong>
+    {{ c[1] }}
+    <br>
+
+    <strong>Tipo:</strong>
+
+    {% if c[2] == "roubo_furto" %}
+        Roubo / Furto
+    {% else %}
+        Danos materiais
+    {% endif %}
+
+    <br>
+
+    <strong>Descrição:</strong>
+    {{ c[3] }}
+    <br>
+
+    <strong>Status:</strong>
+
+    {% if c[4] == "em_analise" %}
+
+        Em análise
+
+    {% elif c[4] == "aprovado" %}
+
+        Aprovado
+
+    {% else %}
+
+        Reprovado
+
+    {% endif %}
+
+    <br>
+
+    <strong>Data:</strong>
+
+    {{ c[5].strftime('%d/%m/%Y às %H:%M') }}
+
+    <br><br>
+
+    {% if c[4] == "em_analise" %}
+
+        <form
+            method="POST"
+            action="/chamados/{{ c[0] }}/aprovar"
+            style="display:inline;"
+        >
+
+            <button type="submit">
+                Aprovar
+            </button>
+
+        </form>
+
+        <form
+            method="POST"
+            action="/chamados/{{ c[0] }}/reprovar"
+            style="display:inline;"
+        >
+
+            <button
+                type="submit"
+                class="logout"
+            >
+                Reprovar
+            </button>
+
+        </form>
+
+    {% endif %}
+
+    <hr>
+
+{% endfor %}
+
+<div class="voltar-container">
+
+    <a href="/home">
+
+        <button type="button">
+            Voltar
+        </button>
+
+    </a>
+
+</div>
+
+{% endblock %}
