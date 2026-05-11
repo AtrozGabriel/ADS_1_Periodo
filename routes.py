@@ -9,8 +9,10 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 BUCKET = "documentos-clientes"
 
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+if not SUPABASE_URL or not SUPABASE_KEY:
+    raise ValueError("SUPABASE_URL ou SUPABASE_KEY não encontrado no .env")
 
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 def login_required(perfis=None):
     def decorator(f):
         @wraps(f)
