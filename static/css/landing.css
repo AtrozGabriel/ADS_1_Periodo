@@ -8,13 +8,13 @@
 /* BODY */
 body {
     font-family: Arial, sans-serif;
-    background: #772289; 
+    background: #75469E; 
     color: #ff0000; 
 }
 
 /* NAVBAR */
 .navbar {
-    background: #8b6ccf;
+    background: #9364BC;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -31,7 +31,7 @@ body {
 /* LOGO */
 .logo h1 {
     font-size: 28px;
-    color: #4bff21; 
+    color: #160D1F; 
 }
 
 /* SUBTEXTO DA LOGO */
@@ -122,7 +122,7 @@ nav a {
     position: absolute;
     width: 370px;
     height: 370px;
-    background: #ffffff;
+    background: #d1a8ff;
     border-radius: 42%;
     z-index: 1;
 }
@@ -152,7 +152,7 @@ nav a {
     left: 50%;
     width: 80px;
     height: 80px;
-    background: #f8e602; 
+    background: #F7C85A; 
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -204,7 +204,7 @@ nav a {
 button,
 .login-btn,
 .cta {
-    background: #defe47;
+    background: #F7C85A;
     color: black;
     border: none;
     padding: 12px 22px;
