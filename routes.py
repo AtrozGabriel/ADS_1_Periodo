@@ -696,6 +696,7 @@ def init_routes(app):
     @app.route("/chamados")
     @login_required(["admin"])
     def chamados():
+
         with conectar() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -705,19 +706,34 @@ def init_routes(app):
                         sd.tipo_solicitacao,
                         sd.descricao,
                         sd.status_analise,
-                        sd.criado_em
+                        sd.criado_em,
+                        COALESCE(string_agg(sa.caminho_arquivo, '|||'), '') AS arquivos
                     FROM solicitacoes_documentos sd
                     JOIN cliente c ON c.id = sd.cliente_id
+                    LEFT JOIN solicitacoes_arquivos sa ON sa.solicitacao_id = sd.id
+                    GROUP BY
+                        sd.id,
+                        c.nome,
+                        sd.tipo_solicitacao,
+                        sd.descricao,
+                        sd.status_analise,
+                        sd.criado_em
                     ORDER BY sd.criado_em DESC
                 """)
                 chamados = cur.fetchall()
 
-        return render_template("chamados.html", chamados=chamados)
+        return render_template(
+            "chamados.html",
+            chamados=chamados,
+            supabase_url=SUPABASE_URL,
+            bucket=BUCKET
+        )
 
 
     @app.route("/chamados/<int:id>/aprovar", methods=["POST"])
     @login_required(["admin"])
     def aprovar_chamado(id):
+
         with conectar() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -732,6 +748,7 @@ def init_routes(app):
     @app.route("/chamados/<int:id>/reprovar", methods=["POST"])
     @login_required(["admin"])
     def reprovar_chamado(id):
+
         with conectar() as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -741,5 +758,33 @@ def init_routes(app):
                 """, (id,))
 
         return redirect("/chamados")
-    #meu irmao
     
+    @app.route("/chamados/<int:id>/excluir", methods=["POST"])
+    @login_required(["admin"])
+    def excluir_chamado(id):
+        with conectar() as conn:
+            with conn.cursor() as cur:
+
+                cur.execute("""
+                    SELECT caminho_arquivo
+                    FROM solicitacoes_arquivos
+                    WHERE solicitacao_id = %s
+                """, (id,))
+
+                arquivos = cur.fetchall()
+
+                for arquivo in arquivos:
+                    if arquivo[0]:
+                        supabase.storage.from_(BUCKET).remove([arquivo[0]])
+
+                cur.execute("""
+                    DELETE FROM solicitacoes_arquivos
+                    WHERE solicitacao_id = %s
+                """, (id,))
+
+                cur.execute("""
+                    DELETE FROM solicitacoes_documentos
+                    WHERE id = %s
+                """, (id,))
+
+        return redirect("/chamados")
