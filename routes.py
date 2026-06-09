@@ -184,48 +184,54 @@ def init_routes(app):
     @login_required(["admin", "atendente"])
     def cadastrar_cliente():
         if request.method == "POST":
-            with conectar() as conn:
-                with conn.cursor() as cur:
+            try:
+                with conectar() as conn:
+                    with conn.cursor() as cur:
 
-                    cur.execute("""
-                        INSERT INTO cliente
-                        (nome, cpf, email, telefone, senha)
-                        VALUES (%s,%s,%s,%s,%s)
-                        RETURNING id
-                    """, (
-                        request.form["nome"],
-                        request.form["cpf"],
-                        request.form["email"],
-                        request.form["telefone"],
-                        request.form["senha"]
-                    ))
+                        cur.execute("""
+                            INSERT INTO cliente
+                            (nome, cpf, email, telefone, senha)
+                            VALUES (%s,%s,%s,%s,%s)
+                            RETURNING id
+                        """, (
+                            request.form["nome"],
+                            request.form["cpf"],
+                            request.form["email"],
+                            request.form["telefone"],
+                            request.form["senha"]
+                        ))
 
-                    cliente_id = cur.fetchone()[0]
+                        cliente_id = cur.fetchone()[0]
 
-                    cur.execute("""
-                        INSERT INTO enderecos
-                        (cliente_id, rua, numero, bairro, cidade, estado, cep)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s)
-                    """, (
-                        cliente_id,
-                        request.form["rua"],
-                        request.form["numero"],
-                        request.form["bairro"],
-                        request.form["cidade"],
-                        request.form["estado"],
-                        request.form["cep"]
-                    ))
+                        cur.execute("""
+                            INSERT INTO enderecos
+                            (cliente_id, rua, numero, bairro, cidade, estado, cep)
+                            VALUES (%s,%s,%s,%s,%s,%s,%s)
+                        """, (
+                            cliente_id,
+                            request.form["rua"],
+                            request.form["numero"],
+                            request.form["bairro"],
+                            request.form["cidade"],
+                            request.form["estado"],
+                            request.form["cep"]
+                        ))
 
-                    cur.execute("""
-                        INSERT INTO imei
-                        (cliente_id, numero)
-                        VALUES (%s,%s)
-                    """, (
-                        cliente_id,
-                        request.form["imei"]
-                    ))
+                        cur.execute("""
+                            INSERT INTO imei
+                            (cliente_id, numero)
+                            VALUES (%s,%s)
+                        """, (
+                            cliente_id,
+                            request.form["imei"]
+                        ))
 
-            return redirect("/clientes/listar")
+                    conn.commit()
+
+                return redirect("/clientes/listar")
+
+            except Exception as e:
+                return f"ERRO: {e}"
 
         return render_template("clientes_cadastrar.html")
 
