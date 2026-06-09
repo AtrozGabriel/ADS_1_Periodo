@@ -27,15 +27,45 @@
 
 <div class="topo">
 
-    <div class="logo">
-    CELL PROTEGE
-</div>
+    <div class="left-nav">
+
+        <div class="logo">
+            <h1>Cell Protege</h1>
+
+            <div class="sub">
+                <span>Proteção para smartphones</span>
+            </div>
+        </div>
+
+        <div class="badge">
+            <img
+                src="https://img.icons8.com/?size=100&id=YZHzhN7pF7Dw&format=png&color=000000"
+                alt="Qualidade Certificada"
+                width="40"
+                height="40"
+            >
+
+            <p>Qualidade Certificada!</p>
+        </div>
+
+    </div>
 
     {% if session.usuario %}
 
     <div class="usuario">
 
-        👤 {{ session.usuario }}
+        <span class="usuario-info">
+
+            <img
+                src="https://img.icons8.com/?size=100&id=11214&format=png&color=000000"
+                alt="Usuário"
+                width="24"
+                height="24"
+            >
+
+            {{ session.usuario }}
+
+        </span>
 
         <a href="/logout">
 
