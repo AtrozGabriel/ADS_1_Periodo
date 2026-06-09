@@ -21,7 +21,12 @@
         </div>
 
         <div class="badge">
-            <span>✅</span>
+            <img
+                src="https://img.icons8.com/?size=100&id=YZHzhN7pF7Dw&format=png&color=000000"
+                alt="Qualidade Certificada"
+                width="40"
+                height="40"
+            >
             <p>Qualidade Certificada!</p>
         </div>
     </div>
@@ -64,27 +69,27 @@
         <div class="orbit">
 
             <div class="icon i1" onmouseenter="iniciarHover('roubo')" onmouseleave="cancelarHover()">
-                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/c7b1e57de5ab441d8073258d2685f8cd.gif">
+                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/4bf40969e8ae471d8dd144f137a642f4.png">
                 <p>Roubo</p>
             </div>
 
             <div class="icon i2" onmouseenter="iniciarHover('furto')" onmouseleave="cancelarHover()">
-                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/fa7dd6971df9459987427abad01055bf.gif">
+                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/38f3c5f885ac44ff8ba55b6886814899.png">
                 <p>Furto</p>
             </div>
 
             <div class="icon i3" onmouseenter="iniciarHover('quedas')" onmouseleave="cancelarHover()">
-                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/fa858c3122da444fb9b1517fa9e62646.gif">
+                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/a27e97c60e6147819543e1bea5b7cabe.png">
                 <p>Quedas</p>
             </div>
 
             <div class="icon i4" onmouseenter="iniciarHover('agua')" onmouseleave="cancelarHover()">
-                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/6b6645a1e45d41e4bc32e4634aa826aa.gif">
+                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/b045539916854cfb89b83386d19caa77.png">
                 <p>Água</p>
             </div>
 
             <div class="icon i5" onmouseenter="iniciarHover('danos')" onmouseleave="cancelarHover()">
-                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/80402c9385d94de58831aaa9b021687c.gif">
+                <img src="https://gyzqfnxwnnxwzqtzodmu.supabase.co/storage/v1/object/public/uploads/6513bbf1682b492b9bb030e7a9359eec.png">
                 <p>Danos</p>
             </div>
 
@@ -96,13 +101,30 @@
 
 <div id="popupContato" class="popup">
     <div class="popup-content">
+
         <h3>Contato de atendimento:</h3>
-        <p>📞Telefone: (93) 3515-5818</p>
-        <p>📞Telefone: (93) 98119-0323</p>
+
+        <p>
+            <img src="https://img.icons8.com/?size=100&id=FXaeD1H2XCLg&format=png&color=000000" width="18" height="18" alt="">
+            (93) 3515-5818
+        </p>
+
+        <p>
+            <img src="https://img.icons8.com/?size=100&id=FXaeD1H2XCLg&format=png&color=000000" width="18" height="18" alt="">
+            (93) 98119-0323
+        </p>
 
         <h3>Endereços:</h3>
-        <p>📍Rua Sete de setembro 2761 centro</p>
-        <p>📍Avenida Papa nicolau 6040 barcelona</p>
+
+        <p>
+            <img src="https://img.icons8.com/?size=100&id=6OOnASO9fxuG&format=png&color=000000" width="18" height="18" alt="">
+            Rua Sete de Setembro, 2761 - Centro
+        </p>
+
+        <p>
+            <img src="https://img.icons8.com/?size=100&id=6OOnASO9fxuG&format=png&color=000000" width="18" height="18" alt="">
+            Avenida Papa Nicolau, 6040 - Barcelona
+        </p>
 
         <button class="btn-whatsapp"
         onclick="window.open('https://wa.me/5593981190323?text=Olá%20quero%20proteger%20meu%20celular!')">
@@ -110,6 +132,7 @@
         </button>
 
         <button onclick="fecharContato()">Fechar</button>
+
     </div>
 </div>
 
@@ -149,23 +172,23 @@ function abrirPopup(tipo) {
     const texto = document.getElementById("popupTexto");
 
     if (tipo === "roubo") {
-        texto.innerText = "Roubo: em casos de uso de violência ou ameaça.";
-    }
+    texto.innerText = "Seu celular protegido em casos de roubo mediante ameaça ou violência, trazendo mais tranquilidade para o seu dia a dia.";
+    }   
 
     if (tipo === "furto") {
-        texto.innerText = "Furto simples e qualificado: cobre seu aparelho quando levado mesmo sem vestígios (furto simples), ou com vestígios (furto qualificado). Basta apresentar o boletim de ocorrência.";
+        texto.innerText = "Cobertura para furto simples e qualificado, oferecendo mais segurança para o seu celular em diferentes situações. Basta apresentar o boletim de ocorrência.";
     }
 
     if (tipo === "quedas") {
-        texto.innerText = "Quedas e impactos que danifiquem o aparelho. Telas trincadas ou problemas de funcionamento. Se não for possível consertar, te enviamos outro aparelho. Simples assim!";
+        texto.innerText = "Proteção contra danos causados por quedas acidentais, ajudando a manter seu celular seguro mesmo nos imprevistos do dia a dia.";
     }
 
     if (tipo === "agua") {
-        texto.innerText = "O seguro celular CellProtege protege seu aparelho contra danos causados por:\nVapor: Em ambientes como banheiros ou cozinhas.\nImersão na água: Acidentes em piscina, mar, torneira, etc.\nAcidentes com líquidos: Derramamento de café, refrigerante, sucos, etc.";
+        texto.innerText = "Cobertura para danos causados por contato acidental com água e outros líquidos, protegendo seu aparelho contra os acidentes mais comuns.";
     }
 
     if (tipo === "danos") {
-        texto.innerText = "Feijao com farinha";
+        texto.innerText = "Proteção contra danos acidentais que possam comprometer o funcionamento ou a estrutura do aparelho.";
     }
 
     document.getElementById("popupInfo").style.display = "flex";
